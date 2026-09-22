@@ -1,13 +1,13 @@
 # 🤝 Gruppkontrakt: Grupp 2
 
-| Information | Detaljer |
-| --- | --- |
-| **Projekt** | Webbshoppen – Kundportalen (Fas 2) |
-| **Period** | 21 september 2026 – 13 oktober 2026 (v. 39 – v. 42) |
-| **Primär kommunikation** | Gruppens egen kanal i Microsoft Teams |
-| **Projektstyrning** | GitHub Projects |
-| **Motto** | [Skriv ert gemensamma motto här, t.ex. "Lärande och samarbete framför prestige"] |
-| **Referenser** | [PRD.md](file:///c:/docLocal/Lexicon/FE26/grupparbete/PRD.md), [ADR-mall](file:///c:/docLocal/Lexicon/FE26/grupparbete/docs/ADR-mall.md), [Domänordlista](file:///c:/docLocal/Lexicon/FE26/grupparbete/docs/GLOSSARY.md) |
+| Information              | Detaljer                                                                                                                                                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Projekt**              | Webbshoppen – Kundportalen (Fas 2)                                                                                                                                                                                       |
+| **Period**               | 21 september 2026 – 13 oktober 2026 (v. 39 – v. 42)                                                                                                                                                                      |
+| **Primär kommunikation** | Gruppens egen kanal i Microsoft Teams                                                                                                                                                                                    |
+| **Projektstyrning**      | GitHub Projects                                                                                                                                                                                                          |
+| **Motto**                | [Skriv ert gemensamma motto här, t.ex. "Lärande och samarbete framför prestige"]                                                                                                                                         |
+| **Referenser**           | [PRD.md](file:///c:/docLocal/Lexicon/FE26/grupparbete/PRD.md), [ADR-mall](file:///c:/docLocal/Lexicon/FE26/grupparbete/docs/ADR-mall.md), [Domänordlista](file:///c:/docLocal/Lexicon/FE26/grupparbete/docs/GLOSSARY.md) |
 
 ---
 
@@ -15,31 +15,37 @@
 
 För att skapa ett tryggt och förutsägbart arbetsklimat har vi kommit överens om följande:
 
-- **Daily Standup:** Gruppen bestämmer vid kontraktsskrivningen en fast tid **mellan kl. 08:00 och 09:00**. Denna tid är obligatorisk och ska hållas varje dag, såvida inget akut inträffar. Mötet hålls i **gruppens egen kanal i Teams** (max 15 minuter), där alla svarar på:
-  1. *Vad gjorde jag igår?*
-  2. *Vad ska jag göra idag?*
-  3. *Har jag några hinder (blockers) där jag behöver hjälp?*
-- **Vår spikade standup-tid:** Kl. 09:00.
-- **Kärntid:** Vi förväntas vara tillgängliga för samarbete, parprogrammering och snabba frågor i **gruppens Teams-kanal** mellan kl. 09:00 och 12:00. Fokus på eget arbete mellan 13:00 och 16:00.
-- **Frånvaro och förhinder:** Om någon blir sjuk eller får förhinder ska detta meddelas i **gruppens Teams-kanal** senast **30 minuter innan vår valda standup-tid**.
+- **Vår spikade standup-tid:** Kl. 08:45.
+- **Kärntid:** Vi förväntas vara tillgängliga för samarbete, parprogrammering och snabba frågor i teams-kanal Grupp 2 mellan kl. 09:00 och 12:00. Fokus på eget arbete mellan 13:00 och 16:00.
+- **Frånvaro och förhinder:** Om någon blir sjuk eller får förhinder ska detta meddelas i gruppens Teams-kanal så fort som möjigt.
 - **Ambitionsnivå i gruppen:**
-  - Exempel: [ ] "Vi fokuserar på att bygga en stabil MVP och se till att alla i gruppen förstår koden."
-
----
+  - Produkten inte intressant, utan vägen dit
+  - Vägen är målet
+  - Vad har vi för kod-alternativ för arbetet?
+- **Öppna frågor:**
+  - Andreas: Snabbhet vs. Kontroll (Hur kan man vibe-koda i en struktur)
+  - Hannes: Vad är det för skillnad mellan genAI och agentiskAI (webb-chat vs chatt/agent/harness)
+  - Hur precis behöver man vara?
+  - Kevin: hur kontrollera hallisarna?
+- **Individuella mål:**
+  - Andreas: att hänga med och att det är tydligt och förstår vad som händer
+  - Kevin: testa på agentiskt flöde (kommer testa både/och chatt+agentiskt)
+  - Hannes: gå från chatt till agentiskt flöde
+  - Mervin: dela med mig/öva på att tydliggöra flödet
 
 ## 🛠 2. Agilt arbetssätt och planering
 
 Vi jobbar strukturerat för att behålla överblicken och undvika stress:
 
 - **Sprintar:** Vi rekommenderar sprintar om **[5]** arbetsdagar (veckobaserade).
-- **Sprint Planning:** Varje måndag kl. 09:00 går vi gemensamt igenom backloggen och fördelar veckans uppgifter.
+- **Sprint Planning:** Varje måndag kl. 08:45 går vi gemensamt igenom backloggen och fördelar veckans uppgifter.
 - **Issues / Tickets:** Inget arbete påbörjas utan en tillhörande Issue på GitHub. Varje Issue ska ha en tydlig beskrivning kopplad till [PRD.md](file:///c:/docLocal/Lexicon/FE26/grupparbete/PRD.md) samt en "Definition of Done".
-- **Projektbräde:** Vi använder **GitHub Projects** och uppdaterar kolumnerna (*To Do*, *In Progress*, *In Review*, *Done*) i realtid.
-- **Roterande Sprint Lead (Scrum Master):** För att dela på ansvaret och ge alla erfarenhet av agilt ledarskap roterar vi rollen som *Sprint Lead* varje vecka. Sprint Lead öppnar mötena, håller koll på klockan (max 15 min standup) och ser till att GitHub Projects är uppdaterat:
+- **Projektbräde:** Vi använder **GitHub Projects** och uppdaterar kolumnerna (_To Do_, _In Progress_, _In Review_, _Done_) i realtid.
+- **Roterande Sprint Lead (Scrum Master):** För att dela på ansvaret och ge alla erfarenhet av agilt ledarskap roterar vi rollen som _Sprint Lead_ varje vecka. Sprint Lead öppnar mötena, håller koll på klockan (max 15 min standup) och ser till att GitHub Projects är uppdaterat:
   - **Vecka 39 (Sprint 1 – Uppstart och PRD):** `Mervin`
-  - **Vecka 40 (Sprint 2 – MVP-utveckling):** `[Namn]`
-  - **Vecka 41 (Sprint 3 – Moduler och förfining):** `[Namn]`
-  - **Vecka 42 (Sprint 4 – Slutleverans och demo):** `[Namn]`
+  - **Vecka 40 (Sprint 2 – MVP-utveckling):** `Andreas`
+  - **Vecka 41 (Sprint 3 – Moduler och förfining):** `Hannes`
+  - **Vecka 42 (Sprint 4 – Slutleverans och demo):** `Kevin`
 
 ---
 
@@ -75,6 +81,11 @@ För att undvika trasig kod och läckta lösenord:
   - Den som lägger till en ny miljövariabel ansvarar för att uppdatera `.env.example` i repot och meddela gruppen i vår Teams-kanal.
 - **Frekventa commits:** Vi pushar vår kod ofta (minst en gång per arbetsdag) i små, hanterbara PR:ar.
 
+Att lägga till (hur tester körs):
+
+- CI
+- ...
+
 ---
 
 ## 💬 5. Kommunikation och eskaleringsplan (om någon tystnar)
@@ -83,8 +94,7 @@ Vi lovar att bemöta varandra professionellt och schysst:
 
 - **Feedback:** Vi ger konstruktiv feedback på koden, aldrig på person.
 - **Beslut:** Vi strävar efter konsensus. Vid oenighet röstar vi, och vid dött lopp rådfrågar vi läraren.
-- **Eskaleringsplan om en teammedlem uteblir utan förvarning (AWOL-trappan):**
-  1. **Steg 1 (30–45 min efter utebliven standup):** Teamet skickar ett personligt DM i Teams för att stämma av läget.
+- 30–45 min efter utebliven standup Teamet skickar ett personligt DM i Teams för att stämma av läget.
 
 ---
 
@@ -93,10 +103,10 @@ Vi lovar att bemöta varandra professionellt och schysst:
 Genom att skriva under/bekräfta godkänner vi att arbeta enligt detta kontrakt:
 
 - **Medlem 1:** Mervin – 2026-09-21
-- **Medlem 2:** [Namn] – [Datum]
-- **Medlem 3:** [Namn] – [Datum]
-- **Medlem 4:** [Namn] – [Datum]
+- **Medlem 2:** Kevin – 2026-09-21
+- **Medlem 3:** Andreas – 2026-09-22
+- **Medlem 4:** Hannes – 2026-09-22
 
 ---
 
-*Detta kontrakt är ett levande dokument och kan revideras vid gruppens sprint-retrospectives om hela teamet är enigt.*
+_Detta kontrakt är ett levande dokument och kan revideras vid gruppens sprint-retrospectives om hela teamet är enigt._
