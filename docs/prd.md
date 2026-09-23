@@ -207,6 +207,75 @@ _Formulera minst 3–5 konkreta User Stories för ert MVP och era valda funktion
 - **When** `...`
 - **Then** `...`
 
+# User Story 3: Köpa produkter
+
+## Beskrivning
+**Som en** kund i webbshoppen  
+**vill jag** kunna slutföra ett köp av varorna i min varukorg  
+**så att** jag får produkterna levererade hem till mig.
+
+---
+
+## Förutsättningar (Preconditions)
+- Kunden har lagt till minst en produkt i sin varukorg.
+- Kunden befinner sig i kassan.
+
+---
+
+## Acceptanskriterier (Gherkin / BDD)
+
+```gherkin
+Funktionalitet: Slutföra köp i webbshop
+  Som kund
+  Vill jag kunna betala för varorna i min varukorg
+  För att slutföra min beställning
+
+  Bakgrund:
+    Givet att jag har lagt till "Trådlösa hörlurar" i min varukorg
+    Och jag navigerar till kassan
+
+  Scenario: Genomföra ett lyckat köp med giltiga uppgifter
+    När jag fyller i mina leveransuppgifter med giltig adress
+    Och jag väljer "Kortbetalning" som betalmetod
+    Och jag anger giltiga kortuppgifter
+    Och jag klickar på "Slutför köp"
+    Så ska betalningen godkännas
+    Och jag ska omdirigeras till en orderbekräftelsesida
+    Och ett bekräftelsemejl ska skickas till min e-postadress
+    Och min varukorg ska tömmas
+
+  Scenario: Försök till köp med saknade leveransuppgifter
+    När jag lämnar fältet "Gatuadress" tomt
+    Och jag klickar på "Slutför köp"
+    Så ska köpet inte genomföras
+    Och jag ska se felmeddelandet "Vänligen ange en leveransadress"
+    Och jag ska stanna kvar i kassan
+
+  Scenario: Nekad betalning
+    När jag fyller i mina leveransuppgifter med giltig adress
+    Och jag väljer "Kortbetalning" som betalmetod
+    Och jag anger kortuppgifter med otillräckligt saldo
+    Och jag klickar på "Slutför köp"
+    Så ska jag se felmeddelandet "Betalningen nekades. Kontrollera dina uppgifter eller prova ett annat kort."
+    Och beställningen ska inte slutföras
+    Och varukorgen ska fortfarande innehålla mina varor
+
+  Scenario: Försök att gå till kassan med tom varukorg
+    Givet att min varukorg är tom
+    När jag navigerar till kassan
+    Så ska jag omdirigeras till varukorgssidan
+    Och se meddelandet "Din varukorg är tom"
+```
+
+---
+
+## Definition of Done (DoD)
+- [ ] Gherkin-scenarier automatiserade som acceptanstester (t.ex. Cucumber, SpecFlow, Playwright).
+- [ ] Formulärvalidering för obligatoriska leveransfält är implementerad på både klient- och serversida.
+- [ ] Betalningsgateway-integration är testad mot sandbox/testmiljö.
+- [ ] Orderbekräftelsemejl triggas och skickas korrekt.
+- [ ] Varukorgen nollställs i session/databas efter genomfört köp.
+
 ---
 
 ### 5.4 Valda Fördjupningsmoduler & Arkitekturbeslut (ADR)
