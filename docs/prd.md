@@ -146,18 +146,42 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 
 _Formulera minst 3–5 konkreta User Stories för ert MVP och era valda funktioner. Använd Gherkin-format (Given/When/Then) för acceptanskriterierna._
 
-#### User Story 1: [Söka efter produkter]
+#### User Story 1: Söka efter produkter från startsidan
 
-- **Som en** _kund som letar efter en specifik produkt_
-- **vill jag** _kunna skriva in ett sökord i sökfältet och omedelbart se matchande varor_
-- **så att** _jag slipper bläddra igenom hela sortimentet manuellt._
+- **Som kund** som har en viss produkt i åtanke
+- **vill jag** kunna söka efter produktnamn från startsidan och få relevanta förslag medan jag skriver
+- **så att** jag snabbt kan hitta produkten eller se alla matchande produkter.
 
 **Acceptanskriterier (Given / When / Then):**
 
-- **Given** att jag befinner mig på produktkatalogen
-- **When** jag skriver "jacka" i sökfältet
-- **Then** uppdateras URL:en till `?search=jacka` och endast produkter med "jacka" i titeln eller beskrivningen visas.
-- **And** om inga varor matchar visas ett tydligt meddelande: "Inga produkter matchade din sökning".
+- **Given** att kunden befinner sig på startsidan
+- **When** kunden skriver minst två tecken i sökfältet
+- **Then** visas högst fem produkter vars produktnamn innehåller sökfrasen. Matchningen ska ignorera skillnaden mellan stora och små bokstäver. Varje träff visar produktbild, produktnamn och pris.
+
+- **Given** att relevanta produkter visas i dropdownen
+- **When** kunden väljer en träff
+- **Then** öppnas den produktens produktsida.
+
+- **Given** att kunden har skrivit en sökfras
+- **When** kunden trycker på Enter utan att ha markerat en träff, eller väljer sökknappen
+- **Then** kommer kunden till en separat söksida med produkterna som matchar sökfrasen. Sökfrasen sparas i URL:en så att sökningen kan delas och återskapas.
+
+- **Given** att kunden navigerar bland dropdownens träffar med tangentbordet
+- **When** kunden använder piltangenterna för att markera en träff och trycker på Enter
+- **Then** öppnas den markerade produktens produktsida.
+- **And** Escape stänger dropdownen.
+
+- **Given** att inga produkter matchar efter minst två tecken
+- **When** dropdownen uppdateras
+- **Then** visas meddelandet "Inga produkter hittades". Kunden kan fortfarande skicka sökningen till söksidan.
+
+- **Given** att söksidan inte hittar några produkter
+- **When** sidan visar sökresultatet
+- **Then** visas ett tydligt meddelande med sökfrasen och en uppmaning att prova ett annat produktnamn.
+
+- **Given** att fler produkter matchar sökningen än vad som ryms på en resultatsida
+- **When** kunden bläddrar bland resultaten
+- **Then** kan kunden gå vidare mellan resultatsidorna, och sökfrasen bevaras i URL:en.
 
 #### User Story 2: [Filtrera produkter]
 
