@@ -54,12 +54,16 @@ Vi jobbar strukturerat för att behålla överblicken och undvika stress:
 Hur vi använder AI-verktyg på ett sätt som gynnar hela gruppens lärande:
 
 - **Inriktning för AI-användning:**
-  - [ ] **Rådgivande:** Vi använder AI som ett bollplank för logik och felsökning.
-  - [ ] **Generativ med full förståelse:** Vi använder AI för att generera kodblock, men den som checkar in koden ansvarar för att kunna förklara exakt vad den gör för resten av gruppen.
+  - [ ] **Rådgivande:** Som ett bollplank med Matt Pococks skills (grilling)
+  - [ ] **Skapa spec:** Som en skribent av våra Spec med Matt Pococks skill (to-spec)
+  - [ ] **Skapa tickets:** Som en skribent av våra Tickets med Matt Pococks skill (to-tickets)
+  - [ ] **Generativ med full förståelse:** för att generera vertikala slices/seams av våra färdiga issues.
+  - [ ] **Code review:** för att generera vertikala slices/seams av våra färdiga issues med Mat Pockocks skill (code-review).
+
 - **Skydd mot "AI-dumping":**
   - Ingen teammedlem får checka in stora AI-genererade kodsjok eller ändra applikationens grundarkitektur utan att först ha förankrat det med gruppen.
-  - Den som pushar kod ska kunna förklara sin avsikt i teamet på begäran.
-- **Code Reviews:** Innan en Pull Request (PR) mergas till `main` ska minst en annan teammedlem aktivt granska och godkänna koden.
+  - Den som pushar kod ska kunna förklara sin _avsikt_ i teamet på begäran.
+- **Code Reviews:** Innan en Pull Request (PR) mergas till `main` ska minst _en_ annan teammedlem aktivt granska och godkänna koden.
 - **Kunskapsdelning (60-minutersregeln):** Om någon kör fast i mer än **[60]** minuter ber man om hjälp i gruppens Teams-kanal eller startar en parprogrammeringssession.
 
 ---
