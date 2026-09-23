@@ -171,17 +171,13 @@ _Formulera minst 3–5 konkreta User Stories för ert MVP och era valda funktion
 - **When** `...`
 - **Then** `...`
 
-#### User Story 3: [Köpa produkter]
+#### User Story 3: [Hantera varukorgen]
 
-- **Som en** _kund som köper efter en specifik produkt_
-- **vill jag** _kunna..._
-- **så att** _....._
+- **Som en** _kund som vill förbereda ett köp_
+- **vill jag** _kunna lägga till och hantera produkter i en persistent varukorg_
+- **så att** _jag kan se vilka produkter jag valt och vad de kostar sammanlagt._
 
-**Acceptanskriterier:**
-
-- **Given** `...`
-- **When** `...`
-- **Then** `...`
+**Acceptanskriterier:** Se [specifikationen för persistent varukorg](specs/persistent-shopping-cart.md).
 
 ---
 
