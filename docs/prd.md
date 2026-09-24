@@ -161,15 +161,15 @@ _Formulera minst 3–5 konkreta User Stories för ert MVP och era valda funktion
 
 #### User Story 2: [Filtrera produkter]
 
-- **Som en** _kund som filtrerar efter en specifik produkt_
-- **vill jag** _kunna..._
-- **så att** _...._
+- **Som en** _kund som vill hitta produkter som passar mina behov_
+- **vill jag** _filtrera katalogen på kategori, pris och lagerstatus_
+- **så att** _jag snabbt hittar relevanta produkter._
 
-**Acceptanskriterier:**
+**Acceptanskriterier (Given / When / Then):**
 
-- **Given** `...`
-- **When** `...`
-- **Then** `...`
+- **Given** att jag söker i produktkatalogen **When** jag väljer en eller flera kategorier, anger ett prisintervall eller väljer endast produkter i lager **Then** visas produkter som matchar alla filter, med produkter från valfri vald kategori; prisgränserna är inkluderande.
+- **And** sökning och filter sparas i URL:en; sidbyte behåller dem och ändrade filter börjar från sida ett.
+- **And** ogiltiga priser ger ett tydligt fel med värdena kvar; om inga produkter matchar visas ett meddelande och jag kan rensa filtren utan att förlora sökningen.
 
 #### User Story 4: [Hantera varukorgen]
 
