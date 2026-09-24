@@ -192,6 +192,84 @@ _Formulera minst 3–5 konkreta User Stories för ert MVP och era valda funktion
 - **And** sökning och filter sparas i URL:en; sidbyte behåller dem och ändrade filter börjar från sida ett.
 - **And** ogiltiga priser ger ett tydligt fel med värdena kvar; om inga produkter matchar visas ett meddelande och jag kan rensa filtren utan att förlora sökningen.
 
+
+#### User Story 3: Köpa produkter
+
+## Beskrivning
+**Som en** kund i webbshoppen  
+**vill jag** kunna slutföra ett köp av varorna i min varukorg med hjälp av Stripe som betalningsalternativ  
+**så att** jag tryggt kan betala och få produkterna levererade hem till mig.
+
+---
+
+## Förutsättningar (Preconditions)
+- Kunden har lagt till minst en produkt i sin varukorg.
+- Kunden befinner sig i kassan.
+- Betalningsalternativet Stripe är tillgängligt i checkoutsflödet.
+
+---
+
+## Acceptanskriterier (Gherkin / BDD)
+
+```gherkin
+Funktionalitet: Slutföra köp i webbshop via Stripe
+  Som kund
+  Vill jag kunna betala för varorna i min varukorg via Stripe
+  För att slutföra min beställning säkert och enkelt
+
+  Bakgrund:
+    Givet att jag har lagt till "Trådlösa hörlurar" i min varukorg
+    Och jag navigerar till kassan
+
+  Scenario: Genomföra ett lyckat köp med giltiga uppgifter
+    När jag fyller i mina leveransuppgifter med giltig adress
+    Och jag väljer "Stripe Checkout" som betalningsalternativ
+    Och jag genomför betalningen i Stripes säkra betalningsflöde med giltiga kortuppgifter
+    Och jag klickar på "Slutför köp"
+    Så ska betalningen godkännas
+    Och jag ska omdirigeras tillbaka till webbshoppen på en orderbekräftelsesida
+    Och ett bekräftelsemejl ska skickas till min e-postadress
+    Och min varukorg ska tömmas
+
+  Scenario: Försök till köp med saknade leveransuppgifter
+    När jag lämnar fältet "Gatuadress" tomt
+    Och jag klickar på "Slutför köp"
+    Så ska köpet inte genomföras
+    Och jag ska se felmeddelandet "Vänligen ange en leveransadress"
+    Och jag ska stanna kvar i kassan
+
+  Scenario: Nekad betalning via Stripe
+    När jag fyller i mina leveransuppgifter med giltig adress
+    Och jag väljer "Stripe Checkout" som betalningsalternativ
+    Och jag försöker genomföra en betalning med kortuppgifter som inte godkänns av Stripe
+    Och jag avslutar betalningsflödet
+    Så ska jag se felmeddelandet "Betalningen nekades. Kontrollera dina uppgifter eller prova ett annat kort."
+    Och beställningen ska inte slutföras
+    Och varukorgen ska fortfarande innehålla mina varor
+
+  Scenario: Försök att gå till kassan med tom varukorg
+    Givet att min varukorg är tom
+    När jag navigerar till kassan
+    Så ska jag omdirigeras till varukorgssidan
+    Och se meddelandet "Din varukorg är tom"
+
+  Scenario: Stripe som betalningsalternativ visas i kassan
+    Givet att jag är i kassan med minst en produkt i varukorgen
+    När jag granskar betalningsalternativen
+    Så ska "Stripe Checkout" visas som ett tillgängligt betalningsalternativ
+    Och det ska tydligt framgå att betalningen sker via Stripes säkra checkout-flöde
+```
+
+---
+
+## Definition of Done (DoD)
+- [ ] Gherkin-scenarier automatiserade som acceptanstester (t.ex. Cucumber, SpecFlow, Playwright).
+- [ ] Formulärvalidering för obligatoriska leveransfält är implementerad på både klient- och serversida.
+- [ ] Betalningsgateway-integration är testad mot sandbox/testmiljö.
+- [ ] Orderbekräftelsemejl triggas och skickas korrekt.
+- [ ] Varukorgen nollställs i session/databas efter genomfört köp.
+
+
 #### User Story 4: [Hantera varukorgen]
 
 - **Som en** _kund som vill förbereda ett köp_
