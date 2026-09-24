@@ -195,17 +195,20 @@ _Formulera minst 3–5 konkreta User Stories för ert MVP och era valda funktion
 - **When** `...`
 - **Then** `...`
 
-#### User Story 3: [Köpa produkter]
+#### User Story 4: [Hantera varukorgen]
 
-- **Som en** _kund som köper efter en specifik produkt_
-- **vill jag** _kunna..._
-- **så att** _....._
+- **Som en** _kund som vill förbereda ett köp_
+- **vill jag** _kunna lägga till och hantera produkter i en persistent varukorg_
+- **så att** _jag kan se vilka produkter jag valt och vad de kostar sammanlagt._
 
-**Acceptanskriterier:**
+**Acceptanskriterier (Given / When / Then):**
 
-- **Given** `...`
-- **When** `...`
-- **Then** `...`
+- **Given** att jag ser en produkt i katalogen eller på dess detaljsida
+- **When** jag lägger till produkten i varukorgen
+- **Then** visas den där med namn, styckpris, antal och delsumma; en produkt som läggs till igen ökar antalet på samma rad.
+- **And** jag kan ändra antalet eller ta bort produkten, och totalsumman uppdateras.
+- **And** varukorgen sparas mellan sidladdningar och sessioner; produkter utan lager kan inte läggas till eller överstiga lagersaldot.
+- **And** en tom varukorg visar ett tydligt meddelande och en väg tillbaka till produkterna.
 
 ---
 
