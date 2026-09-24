@@ -195,40 +195,30 @@ _Formulera minst 3–5 konkreta User Stories för ert MVP och era valda funktion
 - **When** `...`
 - **Then** `...`
 
-#### User Story 3: [Köpa produkter]
 
-- **Som en** _kund som köper efter en specifik produkt_
-- **vill jag** _kunna..._
-- **så att** _....._
-
-**Acceptanskriterier:**
-
-- **Given** `...`
-- **When** `...`
-- **Then** `...`
-
-# User Story 3: Köpa produkter
+#### User Story 3: Köpa produkter
 
 ## Beskrivning
 **Som en** kund i webbshoppen  
-**vill jag** kunna slutföra ett köp av varorna i min varukorg  
-**så att** jag får produkterna levererade hem till mig.
+**vill jag** kunna slutföra ett köp av varorna i min varukorg med hjälp av Stripe som betalningsalternativ  
+**så att** jag tryggt kan betala och få produkterna levererade hem till mig.
 
 ---
 
 ## Förutsättningar (Preconditions)
 - Kunden har lagt till minst en produkt i sin varukorg.
 - Kunden befinner sig i kassan.
+- Betalningsalternativet Stripe är tillgängligt i checkoutsflödet.
 
 ---
 
 ## Acceptanskriterier (Gherkin / BDD)
 
 ```gherkin
-Funktionalitet: Slutföra köp i webbshop
+Funktionalitet: Slutföra köp i webbshop via Stripe
   Som kund
-  Vill jag kunna betala för varorna i min varukorg
-  För att slutföra min beställning
+  Vill jag kunna betala för varorna i min varukorg via Stripe
+  För att slutföra min beställning säkert och enkelt
 
   Bakgrund:
     Givet att jag har lagt till "Trådlösa hörlurar" i min varukorg
@@ -236,11 +226,11 @@ Funktionalitet: Slutföra köp i webbshop
 
   Scenario: Genomföra ett lyckat köp med giltiga uppgifter
     När jag fyller i mina leveransuppgifter med giltig adress
-    Och jag väljer "Kortbetalning" som betalmetod
-    Och jag anger giltiga kortuppgifter
+    Och jag väljer "Stripe Checkout" som betalningsalternativ
+    Och jag genomför betalningen i Stripes säkra betalningsflöde med giltiga kortuppgifter
     Och jag klickar på "Slutför köp"
     Så ska betalningen godkännas
-    Och jag ska omdirigeras till en orderbekräftelsesida
+    Och jag ska omdirigeras tillbaka till webbshoppen på en orderbekräftelsesida
     Och ett bekräftelsemejl ska skickas till min e-postadress
     Och min varukorg ska tömmas
 
@@ -251,11 +241,11 @@ Funktionalitet: Slutföra köp i webbshop
     Och jag ska se felmeddelandet "Vänligen ange en leveransadress"
     Och jag ska stanna kvar i kassan
 
-  Scenario: Nekad betalning
+  Scenario: Nekad betalning via Stripe
     När jag fyller i mina leveransuppgifter med giltig adress
-    Och jag väljer "Kortbetalning" som betalmetod
-    Och jag anger kortuppgifter med otillräckligt saldo
-    Och jag klickar på "Slutför köp"
+    Och jag väljer "Stripe Checkout" som betalningsalternativ
+    Och jag försöker genomföra en betalning med kortuppgifter som inte godkänns av Stripe
+    Och jag avslutar betalningsflödet
     Så ska jag se felmeddelandet "Betalningen nekades. Kontrollera dina uppgifter eller prova ett annat kort."
     Och beställningen ska inte slutföras
     Och varukorgen ska fortfarande innehålla mina varor
@@ -265,6 +255,12 @@ Funktionalitet: Slutföra köp i webbshop
     När jag navigerar till kassan
     Så ska jag omdirigeras till varukorgssidan
     Och se meddelandet "Din varukorg är tom"
+
+  Scenario: Stripe som betalningsalternativ visas i kassan
+    Givet att jag är i kassan med minst en produkt i varukorgen
+    När jag granskar betalningsalternativen
+    Så ska "Stripe Checkout" visas som ett tillgängligt betalningsalternativ
+    Och det ska tydligt framgå att betalningen sker via Stripes säkra checkout-flöde
 ```
 
 ---
