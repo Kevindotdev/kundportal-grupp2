@@ -6,7 +6,7 @@
 | **Period**               | 21 september 2026 – 13 oktober 2026 (v. 39 – v. 42)                                                                                                                                                                      |
 | **Primär kommunikation** | Gruppens egen kanal i Microsoft Teams                                                                                                                                                                                    |
 | **Projektstyrning**      | GitHub Projects                                                                                                                                                                                                          |
-| **Motto**                | [Skriv ert gemensamma motto här, t.ex. "Lärande och samarbete framför prestige"]                                                                                                                                         |
+| **Motto**                | Produkten inte intressant, utan vägen dit                                                                                                                                                                                |
 | **Referenser**           | [PRD.md](file:///c:/docLocal/Lexicon/FE26/grupparbete/PRD.md), [ADR-mall](file:///c:/docLocal/Lexicon/FE26/grupparbete/docs/ADR-mall.md), [Domänordlista](file:///c:/docLocal/Lexicon/FE26/grupparbete/docs/GLOSSARY.md) |
 
 ---

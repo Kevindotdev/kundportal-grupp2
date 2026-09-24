@@ -114,27 +114,24 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 
 ## 5. Teamets Arbetsdel & Specifikation [Att färdigställas av teamet]
 
-> ✍️ **Instruktion till teamet:**  
-> Denna sektion ska fyllas i av gruppen under **Sprint 1 (vecka 39)** innan kodningen drar igång.
-
 ### 5.1 Vald Kodbas från Fas 1 & Repouppsättning
 
-> 🚀 **Gemensamt repo från start:**  
-> För att alla i gruppen ska ha samma förutsättningar och behörigheter ska ni **inte** fortsätta koda direkt i en enskild persons gamla Fas 1-repo.
->
-> [x] En person skapar ett **helt nytt gemensamt GitHub-repo** för gruppen (t.ex. `grupp-X-webbshop-fas2`).
-> [x] Bjud in samtliga gruppmedlemmar som **Collaborators** med fulla skrivrättigheter.
-> [x] Kopiera över den valda koden från Fas 1 och pusha som er första commit (`Initial commit from Phase 1`).
-> [x] Lägg in detta dokument (`PRD.md`), `kontrakt.md` och `docs/` i repot.
+🚀 **Gemensamt repo från start:**  
+För att alla i gruppen ska ha samma förutsättningar och behörigheter ska ni **inte** fortsätta koda direkt i en enskild persons gamla Fas 1-repo.
+
+[x] Kevin skapat ett **helt nytt gemensamt GitHub-repo** för gruppen (`kundportal-grupp2`).
+[x] Bjudit in samtliga gruppmedlemmar som **Collaborators** med fulla skrivrättigheter.
+[x] Kopierat över den valda koden från Fas 1 och pusha som er första commit (`Initial commit from Phase 1`).
+[x] Lägg in detta dokument (`PRD.md`), `kontrakt.md` och `docs/` i repot.
 
 - **Vald Fas 1-kodbas:** Bygger på kod skriven av `Kevin/Andreas: https://github.com/sandrauddman/agileProjectGrupp2`
 - **Nytt gemensamt GitHub-repo:** `https://github.com/Kevindotdev/kundportal-grupp2`
-- **Eventuella städnings- eller refaktoreringsbehov i basen innan start:**
-  - Lägga in linterregler
-  - Lägga in formateringsregler
-  - Lägga till gemensamma skills
-  - Lägga till en AGENTS.md
-  - Radera GroupRetrospective.md osv.
+- **städnings- eller refaktoreringsbehov i basen innan start:**
+  [x] Lägga in linterregler (eslinst)
+  [x] Lägga in formateringsregler (prettier)
+  [x] Lägga till gemensamma skills
+  [x] Lägga till en AGENTS.md
+  [x] Radera GroupRetrospective.md osv.
 
 ---
 
