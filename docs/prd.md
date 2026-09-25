@@ -180,10 +180,10 @@ _Formulera minst 3–5 konkreta User Stories för ert MVP och era valda funktion
 - **And** sökning och filter sparas i URL:en; sidbyte behåller dem och ändrade filter börjar från sida ett.
 - **And** ogiltiga priser ger ett tydligt fel med värdena kvar; om inga produkter matchar visas ett meddelande och jag kan rensa filtren utan att förlora sökningen.
 
-
 #### User Story 3: Köpa produkter
 
 ## Beskrivning
+
 **Som en** kund i webbshoppen  
 **vill jag** kunna slutföra ett köp av varorna i min varukorg med hjälp av Stripe som betalningsalternativ  
 **så att** jag tryggt kan betala och få produkterna levererade hem till mig.
@@ -191,6 +191,7 @@ _Formulera minst 3–5 konkreta User Stories för ert MVP och era valda funktion
 ---
 
 ## Förutsättningar (Preconditions)
+
 - Kunden har lagt till minst en produkt i sin varukorg.
 - Kunden befinner sig i kassan.
 - Betalningsalternativet Stripe är tillgängligt i checkoutsflödet.
@@ -251,12 +252,12 @@ Funktionalitet: Slutföra köp i webbshop via Stripe
 ---
 
 ## Definition of Done (DoD)
+
 - [ ] Gherkin-scenarier automatiserade som acceptanstester (t.ex. Cucumber, SpecFlow, Playwright).
 - [ ] Formulärvalidering för obligatoriska leveransfält är implementerad på både klient- och serversida.
 - [ ] Betalningsgateway-integration är testad mot sandbox/testmiljö.
 - [ ] Orderbekräftelsemejl triggas och skickas korrekt.
 - [ ] Varukorgen nollställs i session/databas efter genomfört köp.
-
 
 #### User Story 4: [Hantera varukorgen]
 
@@ -294,9 +295,12 @@ Funktionalitet: Slutföra köp i webbshop via Stripe
 1. **Modul 1:** `Varukorg med Zustand`
    - **ADR-dokument:** Länk till `docs/ADR-001-Zustand.md`
    - **Kort motivering:** `Gruppen har inte jobbat med Zustand tidigare så vi ville testa. Zustand var en rekommendation.`
-2. **Modul 2:** `Tailwind`
-   - **ADR-dokument:** Länk till `docs/ADR-002-Tailwind.md`
-   - **Kort motivering:** `En lättare överblick; gruppen är bekväm med den.`
+2. **Modul 2:** `Stripe`
+   - **ADR-dokument:** Länk till `docs/ADR-002-Stripe.md`
+   - **Kort motivering:** `Det är en viktig modul som vi vill få djup förståelse i.`
+3. **Modul 3:** `NextAuth`
+   - **ADR-dokument:** Länk till `docs/ADR-003-NextAuth.md`
+   - **Kort motivering:** `Vi vill ha begränsad åtkomst till /admin.`
 
 ---
 
