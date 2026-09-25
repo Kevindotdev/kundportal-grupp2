@@ -98,21 +98,9 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 | **〽️ Prestandaoptimering**    |  🔴 Avancerad   | Avancerad strömning, skelettladdare och optimistiska gränssnittsuppdateringar.<br>_(Rekommenderat: **Suspense-boundaries**, `useOptimistic` och Server Actions)._                                                       |
 | **⚙️ Automatiserad Testning** |  🔴 Avancerad   | E2E-testning av affärskritiska flöden (sök vara → öppna detaljsida → lägg i korg).<br>_(Rekommenderat: **Playwright**)._                                                                                                |
 
-> ⚠️ **Arkitekturtips inför val av moduler:**
->
-> - **Stateful: Persistent Varukorg (Zustand)**.
-> - **Ikoner: Lucide Icons**
-> - **Validering: Zod**
-> - **CSS-ramverk: Tailwind**
-
-> ⚠️ **AI-guardrails baserat på ovan val av moduler:**
->
-> - **Shadcn/Tailwind linter**
-> - **Styleguide (AirBnB)**
-
 ---
 
-## 5. Teamets Arbetsdel & Specifikation [Att färdigställas av teamet]
+## 5. Teamets Arbetsdel & Specifikation
 
 ### 5.1 Vald Kodbas från Fas 1 & Repouppsättning
 
@@ -192,6 +180,7 @@ _Formulera minst 3–5 konkreta User Stories för ert MVP och era valda funktion
 - **When** `...`
 - **Then** `...`
 
+<<<<<<< Updated upstream
 #### User Story 3: [Köpa produkter]
 
 - **Som en** _kund som köper efter en specifik produkt_
@@ -203,13 +192,118 @@ _Formulera minst 3–5 konkreta User Stories för ert MVP och era valda funktion
 - **Given** `...`
 - **When** `...`
 - **Then** `...`
+=======
+#### User Story 3: Köpa produkter
+
+##### Beskrivning
+
+**Som en** kund i webbshoppen  
+**vill jag** kunna slutföra ett köp av varorna i min varukorg med hjälp av Stripe som betalningsalternativ  
+**så att** jag tryggt kan betala och få produkterna levererade hem till mig.
+
+---
+
+##### Förutsättningar (Preconditions)
+
+- Kunden har lagt till minst en produkt i sin varukorg.
+- Kunden befinner sig i kassan.
+- Betalningsalternativet Stripe är tillgängligt i checkoutsflödet.
+
+---
+
+##### Acceptanskriterier (Gherkin / BDD)
+
+```gherkin
+Funktionalitet: Slutföra köp i webbshop via Stripe
+  Som kund
+  Vill jag kunna betala för varorna i min varukorg via Stripe
+  För att slutföra min beställning säkert och enkelt
+
+  Bakgrund:
+    Givet att jag har lagt till "Trådlösa hörlurar" i min varukorg
+    Och jag navigerar till kassan
+
+  Scenario: Genomföra ett lyckat köp med giltiga uppgifter
+    När jag fyller i mina leveransuppgifter med giltig adress
+    Och jag väljer "Stripe Checkout" som betalningsalternativ
+    Och jag genomför betalningen i Stripes säkra betalningsflöde med giltiga kortuppgifter
+    Och jag klickar på "Slutför köp"
+    Så ska betalningen godkännas
+    Och jag ska omdirigeras tillbaka till webbshoppen på en orderbekräftelsesida
+    Och ett bekräftelsemejl ska skickas till min e-postadress
+    Och min varukorg ska tömmas
+
+  Scenario: Försök till köp med saknade leveransuppgifter
+    När jag lämnar fältet "Gatuadress" tomt
+    Och jag klickar på "Slutför köp"
+    Så ska köpet inte genomföras
+    Och jag ska se felmeddelandet "Vänligen ange en leveransadress"
+    Och jag ska stanna kvar i kassan
+
+  Scenario: Nekad betalning via Stripe
+    När jag fyller i mina leveransuppgifter med giltig adress
+    Och jag väljer "Stripe Checkout" som betalningsalternativ
+    Och jag försöker genomföra en betalning med kortuppgifter som inte godkänns av Stripe
+    Och jag avslutar betalningsflödet
+    Så ska jag se felmeddelandet "Betalningen nekades. Kontrollera dina uppgifter eller prova ett annat kort."
+    Och beställningen ska inte slutföras
+    Och varukorgen ska fortfarande innehålla mina varor
+
+  Scenario: Försök att gå till kassan med tom varukorg
+    Givet att min varukorg är tom
+    När jag navigerar till kassan
+    Så ska jag omdirigeras till varukorgssidan
+    Och se meddelandet "Din varukorg är tom"
+
+  Scenario: Stripe som betalningsalternativ visas i kassan
+    Givet att jag är i kassan med minst en produkt i varukorgen
+    När jag granskar betalningsalternativen
+    Så ska "Stripe Checkout" visas som ett tillgängligt betalningsalternativ
+    Och det ska tydligt framgå att betalningen sker via Stripes säkra checkout-flöde
+```
+
+---
+
+##### Definition of Done (DoD)
+
+- [ ] Gherkin-scenarier automatiserade som acceptanstester (t.ex. Cucumber, SpecFlow, Playwright).
+- [ ] Formulärvalidering för obligatoriska leveransfält är implementerad på både klient- och serversida.
+- [ ] Betalningsgateway-integration är testad mot sandbox/testmiljö.
+- [ ] Orderbekräftelsemejl triggas och skickas korrekt.
+- [ ] Varukorgen nollställs i session/databas efter genomfört köp.
+
+#### User Story 4: [Hantera varukorgen]
+
+- **Som en** _kund som vill förbereda ett köp_
+- **vill jag** _kunna lägga till och hantera produkter i en persistent varukorg_
+- **så att** _jag kan se vilka produkter jag valt och vad de kostar sammanlagt._
+
+**Acceptanskriterier (Given / When / Then):**
+
+- **Given** att jag ser en produkt i katalogen eller på dess detaljsida
+- **When** jag lägger till produkten i varukorgen
+- **Then** visas den där med namn, styckpris, antal och delsumma; en produkt som läggs till igen ökar antalet på samma rad.
+- **And** jag kan ändra antalet eller ta bort produkten, och totalsumman uppdateras.
+- **And** varukorgen sparas mellan sidladdningar och sessioner; produkter utan lager kan inte läggas till eller överstiga lagersaldot.
+- **And** en tom varukorg visar ett tydligt meddelande och en väg tillbaka till produkterna.
+>>>>>>> Stashed changes
 
 ---
 
 ### 5.4 Valda Fördjupningsmoduler & Arkitekturbeslut (ADR)
 
-> 💡 **Riktlinje för ADR:er (Architecture Decision Records):**  
-> **Skriv INTE en ADR för varje litet beslut!** Ni ska **endast skriva 1 (max 2) ADR:er för hela projektet**.  
+#### Arkitekturval
+
+- **Stateful: Persistent Varukorg (Zustand)**.
+- **Ikoner: Lucide Icons**
+- **Validering: Zod**
+- **CSS-ramverk: Tailwind**
+
+**AI-guardrails baserat på ovan val av moduler:**
+
+- **Shadcn/Tailwind linter**
+- **Styleguide (AirBnB)**
+
 > Det är **extra viktigt och naturligt att koppla er ADR till era valbara fördjupningsmoduler** (t.ex. _Varför valde vi Zustand framför Context för varukorgen?_ eller _Varför valde vi Supabase framför JSON-server?_). Använd mallen i `docs/ADR-mall.md`.
 
 1. **Modul 1:** `Varukorg med Zustand`
