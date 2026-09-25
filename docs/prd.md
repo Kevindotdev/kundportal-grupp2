@@ -98,21 +98,9 @@ För att särskilja ert erbjudande och skapa extra affärsvärde har kunden list
 | **〽️ Prestandaoptimering**    |  🔴 Avancerad   | Avancerad strömning, skelettladdare och optimistiska gränssnittsuppdateringar.<br>_(Rekommenderat: **Suspense-boundaries**, `useOptimistic` och Server Actions)._                                                       |
 | **⚙️ Automatiserad Testning** |  🔴 Avancerad   | E2E-testning av affärskritiska flöden (sök vara → öppna detaljsida → lägg i korg).<br>_(Rekommenderat: **Playwright**)._                                                                                                |
 
-> ⚠️ **Arkitekturtips inför val av moduler:**
->
-> - **Stateful: Persistent Varukorg (Zustand)**.
-> - **Ikoner: Lucide Icons**
-> - **Validering: Zod**
-> - **CSS-ramverk: Tailwind**
-
-> ⚠️ **AI-guardrails baserat på ovan val av moduler:**
->
-> - **Shadcn/Tailwind linter**
-> - **Styleguide (AirBnB)**
-
 ---
 
-## 5. Teamets Arbetsdel & Specifikation [Att färdigställas av teamet]
+## 5. Teamets Arbetsdel & Specifikation
 
 ### 5.1 Vald Kodbas från Fas 1 & Repouppsättning
 
@@ -289,8 +277,18 @@ Funktionalitet: Slutföra köp i webbshop via Stripe
 
 ### 5.4 Valda Fördjupningsmoduler & Arkitekturbeslut (ADR)
 
-> 💡 **Riktlinje för ADR:er (Architecture Decision Records):**  
-> **Skriv INTE en ADR för varje litet beslut!** Ni ska **endast skriva 1 (max 2) ADR:er för hela projektet**.  
+#### Arkitekturval
+
+- **Stateful: Persistent Varukorg (Zustand)**.
+- **Ikoner: Lucide Icons**
+- **Validering: Zod**
+- **CSS-ramverk: Tailwind**
+
+**AI-guardrails baserat på ovan val av moduler:**
+
+- **Shadcn/Tailwind linter**
+- **Styleguide (AirBnB)**
+
 > Det är **extra viktigt och naturligt att koppla er ADR till era valbara fördjupningsmoduler** (t.ex. _Varför valde vi Zustand framför Context för varukorgen?_ eller _Varför valde vi Supabase framför JSON-server?_). Använd mallen i `docs/ADR-mall.md`.
 
 1. **Modul 1:** `Varukorg med Zustand`
