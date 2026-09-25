@@ -180,25 +180,24 @@ _Formulera minst 3–5 konkreta User Stories för ert MVP och era valda funktion
 - **And** sökning och filter sparas i URL:en; sidbyte behåller dem och ändrade filter börjar från sida ett.
 - **And** ogiltiga priser ger ett tydligt fel med värdena kvar; om inga produkter matchar visas ett meddelande och jag kan rensa filtren utan att förlora sökningen.
 
+
 #### User Story 3: Köpa produkter
 
-##### Beskrivning
-
+## Beskrivning
 **Som en** kund i webbshoppen  
 **vill jag** kunna slutföra ett köp av varorna i min varukorg med hjälp av Stripe som betalningsalternativ  
 **så att** jag tryggt kan betala och få produkterna levererade hem till mig.
 
 ---
 
-##### Förutsättningar (Preconditions)
-
+## Förutsättningar (Preconditions)
 - Kunden har lagt till minst en produkt i sin varukorg.
 - Kunden befinner sig i kassan.
 - Betalningsalternativet Stripe är tillgängligt i checkoutsflödet.
 
 ---
 
-##### Acceptanskriterier (Gherkin / BDD)
+## Acceptanskriterier (Gherkin / BDD)
 
 ```gherkin
 Funktionalitet: Slutföra köp i webbshop via Stripe
@@ -251,13 +250,13 @@ Funktionalitet: Slutföra köp i webbshop via Stripe
 
 ---
 
-##### Definition of Done (DoD)
-
+## Definition of Done (DoD)
 - [ ] Gherkin-scenarier automatiserade som acceptanstester (t.ex. Cucumber, SpecFlow, Playwright).
 - [ ] Formulärvalidering för obligatoriska leveransfält är implementerad på både klient- och serversida.
 - [ ] Betalningsgateway-integration är testad mot sandbox/testmiljö.
 - [ ] Orderbekräftelsemejl triggas och skickas korrekt.
 - [ ] Varukorgen nollställs i session/databas efter genomfört köp.
+
 
 #### User Story 4: [Hantera varukorgen]
 
