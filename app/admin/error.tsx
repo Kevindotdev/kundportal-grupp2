@@ -47,10 +47,10 @@ export default function ErrorPage({ error, reset }: ErrorPageProps) {
             [ retry ]
           </button>
           <Link
-            href="/"
+            href="/admin"
             className="inline-flex items-center justify-center rounded border border-zinc-600 px-5 py-2 font-mono text-sm text-zinc-300 hover:border-zinc-400 hover:text-white"
           >
-            [ cd / ]
+            [ cd /admin ]
           </Link>
         </div>
       </div>

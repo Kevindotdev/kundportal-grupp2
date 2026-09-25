@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import ProductService from '@/services/product-service';
 import type { Product } from '@/app/types';
-import { addProductSchema, editProduct } from '@/schemas/validation-schema';
+import { addProductSchema, editProduct } from '@/app/admin/_schemas/validation-schema';
 
 // Form values are kept as strings so submitted values can be restored after validation errors
 export type ProductFormValues = {
@@ -34,7 +34,7 @@ export async function deleteProduct(productId: number) {
   }
 
   // Telling NEXT.JS That product list needs to be updated
-  revalidatePath('/');
+  revalidatePath('/admin');
 
   return {
     success: response.success,
