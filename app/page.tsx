@@ -46,7 +46,7 @@ export default async function Home({ searchParams }: PageProps) {
       <div className="container max-w-7xl mx-auto px-6 py-6">
         <InventoryStatistics />
 
-        <SearchForm categories={categories} selectedCategory={categoryParams} selectedStock={stockParams} />
+        <SearchForm categories={categories} selectedCategory={categoryParams} selectedStock={stockParams} queryParam={queryParams} />
         <section className="mt-5">
           <ProductListComponent
             products={products}

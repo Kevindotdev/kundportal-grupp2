@@ -8,18 +8,39 @@ export default class ProductService {
   // GET: Products
   static async getProducts(currentPage: number, categoryParams: string, stockParams: string, queryParams: string): Promise<ApiResponse<ProductsResponse>> {
     try {
-      const category = categoryParams ? `&categoryId=${categoryParams}` : '';
-      const query = queryParams ? `&q=${queryParams}` : '';
       const stockFilters: Record<string, string> = {
-        inStock: `&stock_gte=10`,
-        lowStock: `&stock_gte=1&stock_lte=10`,
-        outofStock: `&stock_lte=0`,
+        inStock: '10',
+        lowStock: '1',
+        outofStock: '0',
       };
 
-      const stock = stockFilters[stockParams] ?? '';
+      const searchParams = new URLSearchParams({
+        _page: String(currentPage),
+        _limit: defaultLimit,
+        _sort: 'id',
+        _order: 'desc',
+        _expand: 'category',
+      });
 
-            
-      const response = await fetch(`${API_URL}/products?_page=${currentPage}&_limit=${defaultLimit}&_sort=id&_order=desc&_expand=category${category}&_expand=stock${stock}&_expand=query${query}`, {
+      if (categoryParams) {
+        searchParams.set('categoryId', categoryParams);
+      }
+
+      if (stockParams === 'inStock') {
+        searchParams.set('stock_gte', stockFilters.inStock);
+      } else if (stockParams === 'lowStock') {
+        searchParams.set('stock_gte', stockFilters.lowStock);
+        searchParams.set('stock_lte', '10');
+      } else if (stockParams === 'outofStock') {
+        searchParams.set('stock_lte', stockFilters.outofStock);
+      }
+
+      if (queryParams) {
+        const escapedQuery = queryParams.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        searchParams.set('title_like', `^${escapedQuery}$`);
+      }
+
+      const response = await fetch(`${API_URL}/products?${searchParams.toString()}`, {
         method: 'GET',
       });
 
