@@ -10,6 +10,14 @@ type Props = {
 };
 
 export default function ProductPagination({ currentPage, totalPages, categoryParam, stockParam, queryParam }: Props) {
+  const getPageHref = (page: number) => {
+    const params = new URLSearchParams({ page: String(page) });
+    if (categoryParam) params.set('category', categoryParam);
+    if (stockParam) params.set('stock', stockParam);
+    if (queryParam) params.set('search', queryParam);
+    return `/admin?${params}`;
+  };
+
   return (
     <div className="flex justify-center border-t border-gray-200 px-6 py-5">
       <div className="flex items-center gap-2">
@@ -17,7 +25,7 @@ export default function ProductPagination({ currentPage, totalPages, categoryPar
         {currentPage > 1 && (
           <Link
             className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-100"
-            href={`/admin?page=${currentPage - 1}&category=${categoryParam}&stock=${stockParam}&search=${queryParam}`}
+            href={getPageHref(currentPage - 1)}
           >
             <ChevronLeft size={18} />
           </Link>
@@ -26,7 +34,7 @@ export default function ProductPagination({ currentPage, totalPages, categoryPar
         {/* First page */}
         {currentPage > 1 && (
           <Link
-            href={`/admin?page=1&category=${categoryParam}`}
+            href={getPageHref(1)}
             className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-100"
           >
             1
@@ -39,7 +47,7 @@ export default function ProductPagination({ currentPage, totalPages, categoryPar
         {/*Number Current page + 1 */}
         {currentPage + 1 <= totalPages && (
           <Link
-            href={`/admin?page=${currentPage + 1}&category=${categoryParam}&stock=${stockParam}&search=${queryParam}`}
+            href={getPageHref(currentPage + 1)}
             className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
           >
             {currentPage + 1}
@@ -49,7 +57,7 @@ export default function ProductPagination({ currentPage, totalPages, categoryPar
         {/*Number Current page + 2 */}
         {currentPage + 2 <= totalPages && (
           <Link
-            href={`/admin?page=${currentPage + 2}&category=${categoryParam}&stock=${stockParam}&search=${queryParam}`}
+            href={getPageHref(currentPage + 2)}
             className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
           >
             {currentPage + 2}
@@ -59,7 +67,7 @@ export default function ProductPagination({ currentPage, totalPages, categoryPar
         {/*Number of total page */}
         {currentPage + 2 < totalPages && (
           <Link
-            href={`/admin?page=${totalPages}&category=${categoryParam}&stock=${stockParam}&search=${queryParam}`}
+            href={getPageHref(totalPages)}
             className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-100"
           >
             {totalPages}
@@ -69,7 +77,7 @@ export default function ProductPagination({ currentPage, totalPages, categoryPar
         {/* Right arrow */}
         {currentPage < totalPages && (
           <Link
-            href={`/admin?page=${currentPage + 1}&category=${categoryParam}&stock=${stockParam}&search=${queryParam}`}
+            href={getPageHref(currentPage + 1)}
             className="flex h-10 w-10 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-600 hover:bg-gray-100"
           >
             <ChevronRight size={18} />

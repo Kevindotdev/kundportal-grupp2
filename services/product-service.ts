@@ -8,18 +8,34 @@ export default class ProductService {
   // GET: Products
   static async getProducts(currentPage: number, categoryParams: string, stockParams: string, queryParams: string): Promise<ApiResponse<ProductsResponse>> {
     try {
-      const category = categoryParams ? `&categoryId=${categoryParams}` : '';
-      const query = queryParams ? `&q=${queryParams}` : '';
       const stockFilters: Record<string, string> = {
-        inStock: `&stock_gte=10`,
-        lowStock: `&stock_gte=1&stock_lte=10`,
-        outofStock: `&stock_lte=0`,
+        inStock: 'stock_gte=10',
+        lowStock: 'stock_gte=1&stock_lte=10',
+        outofStock: 'stock_lte=0',
       };
 
-      const stock = stockFilters[stockParams] ?? '';
+      const params = new URLSearchParams({
+        _page: String(currentPage),
+        _limit: defaultLimit,
+        _sort: 'id',
+        _order: 'desc',
+        _expand: 'category',
+      });
 
-            
-      const response = await fetch(`${API_URL}/products?_page=${currentPage}&_limit=${defaultLimit}&_sort=id&_order=desc&_expand=category${category}&_expand=stock${stock}&_expand=query${query}`, {
+      if (categoryParams) {
+        params.set('categoryId', categoryParams);
+      }
+
+      const stockFilter = stockFilters[stockParams];
+      if (stockFilter) {
+        new URLSearchParams(stockFilter).forEach((value, key) => params.set(key, value));
+      }
+
+      if (queryParams) {
+        params.set('q', queryParams);
+      }
+
+      const response = await fetch(`${API_URL}/products?${params}`, {
         method: 'GET',
       });
 
