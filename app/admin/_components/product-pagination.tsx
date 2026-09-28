@@ -18,7 +18,7 @@ export default function ProductPagination({ currentPage, totalPages, categoryPar
       search: queryParam ?? '',
     });
 
-    return `/?${params.toString()}`;
+    return `/admin?${params.toString()}`;
   };
 
   return (

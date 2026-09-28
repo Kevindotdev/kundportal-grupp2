@@ -1,4 +1,4 @@
-import StockService from "@/services/stock-service";
+import StockService from "@/app/admin/_services/stock-service";
 import { Package, CircleCheck, TriangleAlert, CircleX } from "lucide-react";
 
 export default async function InventoryStatistics() {

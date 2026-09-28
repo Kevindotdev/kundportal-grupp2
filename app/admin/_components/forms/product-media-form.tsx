@@ -1,5 +1,5 @@
 import type { Product } from '@/app/types';
-import type { ProductFormValues } from '@/actions/product-action';
+import type { ProductFormValues } from '@/app/admin/_actions/product-action';
 
 type Props = {
     product?: Product;

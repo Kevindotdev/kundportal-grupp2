@@ -10,7 +10,7 @@ import { X } from 'lucide-react';
 
 import PricingInventoryForm from './forms/pricing-inventory-form';
 import ProductMediaForm from './forms/product-media-form';
-import { createProduct, updateProduct } from '@/actions/product-action';
+import { createProduct, updateProduct } from '@/app/admin/_actions/product-action';
 import { toast } from 'sonner';
 
 type ProductModalProps = {

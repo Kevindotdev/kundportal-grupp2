@@ -1,10 +1,10 @@
 //Components
-import ProductPagination from '@/components/product-pagination';
-import ProductDeleteButton from '@/components/product-delete-button';
-import ProductEditButton from '@/components/product-edit-button';
+import ProductPagination from '@/app/admin/_components/product-pagination';
+import ProductDeleteButton from '@/app/admin/_components/product-delete-button';
+import ProductEditButton from '@/app/admin/_components/product-edit-button';
 
 //Actions
-import { deleteProduct } from '@/actions/product-action';
+import { deleteProduct } from '@/app/admin/_actions/product-action';
 
 //Types
 import type { Category, Product } from '@/app/types';
