@@ -1,7 +1,10 @@
+import StorefrontHeader from '@/components/storefront-header';
+
 export default function HomePage() {
   return (
-    <main>
-      {/* Homepage content/components go here. */}
-    </main>
+    <>
+      <StorefrontHeader />
+      <main>{/* Homepage content/components go here. */}</main>
+    </>
   );
 }
