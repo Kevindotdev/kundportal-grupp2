@@ -3,7 +3,7 @@ import { ShoppingCart, UserRound } from 'lucide-react';
 
 export default function StorefrontHeader() {
   return (
-    <header className="border-b border-slate-200 bg-white text-slate-900">
+    <header className="border-b border-border bg-surface text-surface-foreground">
       <nav
         aria-label="Main navigation"
         className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
@@ -23,7 +23,7 @@ export default function StorefrontHeader() {
           <Link
             href="/admin"
             aria-label="Log in"
-            className="inline-flex size-11 items-center justify-center rounded-md hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
+            className="inline-flex size-11 items-center justify-center rounded-md hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             <UserRound aria-hidden="true" size={20} />
           </Link>
