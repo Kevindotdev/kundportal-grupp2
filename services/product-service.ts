@@ -8,18 +8,22 @@ export default class ProductService {
   // GET: Products
   static async getProducts(currentPage: number, categoryParams: string, stockParams: string, queryParams: string): Promise<ApiResponse<ProductsResponse>> {
     try {
-      const category = categoryParams ? `&categoryId=${categoryParams}` : '';
-      const query = queryParams ? `&q=${queryParams}` : '';
-      const stockFilters: Record<string, string> = {
-        inStock: `&stock_gte=10`,
-        lowStock: `&stock_gte=1&stock_lte=10`,
-        outofStock: `&stock_lte=0`,
-      };
+      const url = new URL('/products', API_URL);
+      url.searchParams.set('_page', String(currentPage));
+      url.searchParams.set('_limit', defaultLimit);
+      url.searchParams.set('_sort', 'id');
+      url.searchParams.set('_order', 'desc');
+      url.searchParams.set('_expand', 'category');
+      if (categoryParams) url.searchParams.set('categoryId', categoryParams);
+      if (queryParams) url.searchParams.set('q', queryParams);
+      if (stockParams === 'inStock') url.searchParams.set('stock_gte', '10');
+      if (stockParams === 'lowStock') {
+        url.searchParams.set('stock_gte', '1');
+        url.searchParams.set('stock_lte', '10');
+      }
+      if (stockParams === 'outofStock') url.searchParams.set('stock_lte', '0');
 
-      const stock = stockFilters[stockParams] ?? '';
-
-            
-      const response = await fetch(`${API_URL}/products?_page=${currentPage}&_limit=${defaultLimit}&_sort=id&_order=desc&_expand=category${category}&_expand=stock${stock}&_expand=query${query}`, {
+      const response = await fetch(url, {
         method: 'GET',
       });
 
