@@ -1,13 +1,31 @@
 @import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+.storefront {
+  --background: oklch(0.985 0.004 255);
+  --foreground: oklch(0.22 0.018 255);
+  --surface: oklch(1 0 0);
+  --surface-foreground: oklch(0.22 0.018 255);
+  --muted: oklch(0.95 0.008 255);
+  --muted-foreground: oklch(0.48 0.018 255);
+  --border: oklch(0.88 0.012 255);
+  --primary: oklch(0.53 0.19 255);
+  --primary-foreground: oklch(0.99 0.004 255);
+  --success: oklch(0.48 0.14 150);
+  --error: oklch(0.53 0.19 25);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-success: var(--success);
+  --color-error: var(--error);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-inter: var(--font-inter);
@@ -18,13 +36,17 @@ body {
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-  body {
-    background: var(--background);
-    color: var(--foreground);
-    font-family: var(--font-inter), Helvetica, sans-serif;
+  .storefront {
+    --background: oklch(0.17 0.012 255);
+    --foreground: oklch(0.94 0.008 255);
+    --surface: oklch(0.21 0.014 255);
+    --surface-foreground: oklch(0.94 0.008 255);
+    --muted: oklch(0.27 0.014 255);
+    --muted-foreground: oklch(0.72 0.014 255);
+    --border: oklch(0.36 0.014 255);
+    --primary: oklch(0.7 0.14 255);
+    --primary-foreground: oklch(0.2 0.04 255);
+    --success: oklch(0.75 0.14 150);
+    --error: oklch(0.72 0.16 25);
   }
 }
