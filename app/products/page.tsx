@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import StorefrontFooter from '@/components/storefront-footer';
 import StorefrontHeader from '@/components/storefront-header';
 import ProductService from '@/services/product-service';
+import { productPageUrl } from '@/utils/product-query';
 import CatalogSearchForm from './search-form';
 
 type Props = {
@@ -13,15 +14,6 @@ type Props = {
     page?: string;
   }>;
 };
-
-function productPageUrl(filters: { search?: string; category?: string; stock?: string }, page: number) {
-  const params = new URLSearchParams();
-  if (filters.search) params.set('search', filters.search);
-  if (filters.category) params.set('category', filters.category);
-  if (filters.stock) params.set('stock', filters.stock);
-  params.set('page', String(page));
-  return `/products?${params.toString()}`;
-}
 
 export default async function ProductsPage({ searchParams }: Props) {
   const params = await searchParams;
@@ -62,9 +54,9 @@ export default async function ProductsPage({ searchParams }: Props) {
 
         {totalPages > 1 && (
           <nav aria-label="Product pages" className="mt-6 flex items-center gap-4">
-            {page > 1 && <Link href={productPageUrl(filters, page - 1)}>Previous</Link>}
+            {page > 1 && <Link href={productPageUrl('/products', filters, page - 1)}>Previous</Link>}
             <span>Page {page} of {totalPages}</span>
-            {page < totalPages && <Link href={productPageUrl(filters, page + 1)}>Next</Link>}
+            {page < totalPages && <Link href={productPageUrl('/products', filters, page + 1)}>Next</Link>}
           </nav>
         )}
       </main>
