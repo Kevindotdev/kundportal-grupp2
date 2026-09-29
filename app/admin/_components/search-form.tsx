@@ -5,15 +5,16 @@ type Props = {
   categories: Category[];
   selectedCategory: string;
   selectedStock: string;
+  selectedSearch: string;
 };
 
-export default function SearchForm({ categories, selectedCategory, selectedStock }: Props) {
+export default function SearchForm({ categories, selectedCategory, selectedStock, selectedSearch }: Props) {
   return (
     <form action="/admin" method="GET" className="bg-white border-1 border-zinc-200 rounded-sm flex flex-wrap p-4 gap-4 mt-6 text-sm">
       <label htmlFor="search" hidden>
         Search
       </label>
-      <input type="text" name="search" id="search" placeholder="Search products..." className="border-1 border-zinc-200 rounded-sm p-2 grow-7" />
+      <input type="text" name="search" id="search" defaultValue={selectedSearch} placeholder="Search products..." className="border-1 border-zinc-200 rounded-sm p-2 grow-7" />
       <label htmlFor="category" hidden>
         Select Category
       </label>
