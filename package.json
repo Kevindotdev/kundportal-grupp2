@@ -36,6 +36,6 @@
     "json-server": "^0.17.4",
     "prettier": "^3.9.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   }
 }
