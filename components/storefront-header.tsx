@@ -1,21 +1,29 @@
 import Link from 'next/link';
+import { connection } from 'next/server';
 import { ShoppingCart, UserRound } from 'lucide-react';
-import type { Product } from '@/app/types';
 import ProductSearch, { type ProductSearchItem } from '@/components/product-search';
-import productsData from '@/server/products.json';
+import ProductService from '@/services/product-service';
 
-const sourceProducts: Product[] = productsData.products;
-const searchableProducts: ProductSearchItem[] = sourceProducts.map(({ id, title, tags, sku, brand, thumbnail, price }) => ({
-  id,
-  title,
-  tags,
-  sku,
-  brand,
-  thumbnail,
-  price,
-}));
+export default async function StorefrontHeader() {
+  await connection();
+  const response = await ProductService.getAllProducts();
 
-export default function StorefrontHeader() {
+  if (!response.success) {
+    throw new Error(`Could not load products for the storefront search: ${response.message}`);
+  }
+
+  const searchableProducts: ProductSearchItem[] = response.data.products.map(
+    ({ id, title, tags, sku, brand, thumbnail, price }) => ({
+      id,
+      title,
+      tags,
+      sku,
+      brand,
+      thumbnail,
+      price,
+    }),
+  );
+
   return (
     <header className="border-b border-border bg-surface text-surface-foreground">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
