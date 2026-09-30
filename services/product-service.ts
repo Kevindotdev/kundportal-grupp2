@@ -33,15 +33,17 @@ export default class ProductService {
   }
 
   // GET: Products
-  static async getProducts(currentPage: number, categoryParams: string, stockParams: string, queryParams: string): Promise<ApiResponse<ProductsResponse>> {
+  static async getProducts(currentPage: number, categoryParams: string | string[], stockParams: string, queryParams: string): Promise<ApiResponse<ProductsResponse>> {
     try {
+      const categories = (Array.isArray(categoryParams) ? categoryParams : [categoryParams])
+        .filter(Boolean);
       const url = new URL('/products', API_URL);
       url.searchParams.set('_page', String(currentPage));
       url.searchParams.set('_limit', defaultLimit);
       url.searchParams.set('_sort', 'id');
       url.searchParams.set('_order', 'desc');
       url.searchParams.set('_expand', 'category');
-      if (categoryParams) url.searchParams.set('categoryId', categoryParams);
+      for (const category of categories) url.searchParams.append('categoryId', category);
       if (queryParams) url.searchParams.set('q', queryParams);
       if (stockParams === 'inStock') url.searchParams.set('stock_gte', '10');
       if (stockParams === 'lowStock') {
@@ -50,11 +52,9 @@ export default class ProductService {
       }
       if (stockParams === 'outofStock') url.searchParams.set('stock_lte', '0');
 
-      const response = await fetch(url, {
-        method: 'GET',
-      });
-
-      const result = await response.json();
+      const response = await fetch(url, { method: 'GET' });
+      if (!response.ok) throw new Error(`Products could not be loaded (HTTP ${response.status}).`);
+      const result = await response.json() as ProductsResponse;
 
       return {
         success: true,
