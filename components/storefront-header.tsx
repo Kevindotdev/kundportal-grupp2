@@ -13,6 +13,11 @@ export default function StorefrontHeader() {
         </Link>
 
         <div className="flex items-center gap-2">
+          {/* Issue #21 entry point for the temporary catalog. Issue #8 can
+              replace this link with the storefront header search control. */}
+          <Link href="/products" className="px-3 py-2 hover:underline">
+            Products
+          </Link>
           <span
             role="img"
             aria-label="Shopping cart"
