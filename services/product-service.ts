@@ -5,6 +5,12 @@ import { normalizeCategories } from '@/utils/product-query';
 const API_URL = 'http://localhost:4000';
 const defaultLimit = '6';
 
+type ProductSearchFilters = {
+  minPrice?: string;
+  maxPrice?: string;
+  inStock?: boolean;
+};
+
 export default class ProductService {
   static async getAllProducts(): Promise<ApiResponse<ProductsResponse>> {
     try {
@@ -34,7 +40,13 @@ export default class ProductService {
   }
 
   // GET: Products
-  static async getProducts(currentPage: number, categoryParams: string | string[], stockParams: string, queryParams: string): Promise<ApiResponse<ProductsResponse>> {
+  static async getProducts(
+    currentPage: number,
+    categoryParams: string | string[],
+    stockParams: string,
+    queryParams: string,
+    filters: ProductSearchFilters = {},
+  ): Promise<ApiResponse<ProductsResponse>> {
     try {
       const categories = normalizeCategories(categoryParams);
       const url = new URL('/products', API_URL);
@@ -45,6 +57,9 @@ export default class ProductService {
       url.searchParams.set('_expand', 'category');
       for (const category of categories) url.searchParams.append('categoryId', category);
       if (queryParams) url.searchParams.set('q', queryParams);
+      if (filters.minPrice !== undefined && filters.minPrice !== '') url.searchParams.set('price_gte', filters.minPrice);
+      if (filters.maxPrice !== undefined && filters.maxPrice !== '') url.searchParams.set('price_lte', filters.maxPrice);
+      if (filters.inStock) url.searchParams.set('stock_gte', '1');
       if (stockParams === 'inStock') url.searchParams.set('stock_gte', '10');
       if (stockParams === 'lowStock') {
         url.searchParams.set('stock_gte', '1');

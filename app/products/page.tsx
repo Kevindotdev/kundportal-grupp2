@@ -13,6 +13,9 @@ type Props = {
     category?: string | string[];
     stock?: string;
     sort?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    inStock?: string;
     page?: string;
   }>;
 };
@@ -23,10 +26,23 @@ export default async function ProductsPage({ searchParams }: Props) {
   const requestedPage = Number(params.page);
   const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
   const categories = normalizeCategories(params.category);
-  const filters = { search, category: categories, stock: params.stock, sort: params.sort };
+  const inStock = params.inStock === 'true';
+  const filters = {
+    search,
+    category: categories,
+    stock: params.stock,
+    sort: params.sort,
+    minPrice: params.minPrice,
+    maxPrice: params.maxPrice,
+    inStock,
+  };
 
   const [response, categoryResponse] = await Promise.all([
-    ProductService.getProducts(page, categories, params.stock ?? '', search),
+    ProductService.getProducts(page, categories, params.stock ?? '', search, {
+      minPrice: params.minPrice,
+      maxPrice: params.maxPrice,
+      inStock,
+    }),
     CategoryService.getAllCategories(),
   ]);
   const products = response.success ? response.data.products : [];
@@ -43,10 +59,13 @@ export default async function ProductsPage({ searchParams }: Props) {
         */}
         <Suspense fallback={<p>Loading catalog filters…</p>}>
           <CatalogSearchForm
-            key={`${search}:${categories.join(',')}`}
+            key={`${search}:${categories.join(',')}:${params.minPrice ?? ''}:${params.maxPrice ?? ''}:${inStock}`}
             search={search}
             categories={categoryResponse.success ? categoryResponse.data.categories : []}
             selectedCategories={categories}
+            minPrice={params.minPrice ?? ''}
+            maxPrice={params.maxPrice ?? ''}
+            inStock={inStock}
           />
         </Suspense>
 
