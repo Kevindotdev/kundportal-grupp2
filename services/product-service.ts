@@ -5,6 +5,33 @@ const API_URL = 'http://localhost:4000';
 const defaultLimit = '6';
 
 export default class ProductService {
+  static async getAllProducts(): Promise<ApiResponse<ProductsResponse>> {
+    try {
+      const url = new URL('/products', API_URL);
+      url.searchParams.set('_sort', 'id');
+      url.searchParams.set('_order', 'desc');
+      url.searchParams.set('_expand', 'category');
+
+      const response = await fetch(url, {
+        method: 'GET',
+        cache: 'no-store',
+      });
+
+      if (!response.ok) {
+        return errorResponse(`Products could not be loaded (HTTP ${response.status}).`);
+      }
+
+      const result = await response.json();
+
+      return {
+        success: true,
+        data: result,
+      } satisfies ApiSuccessResponse<ProductsResponse>;
+    } catch {
+      return errorResponse('Kunde inte ansluta till servern.');
+    }
+  }
+
   // GET: Products
   static async getProducts(currentPage: number, categoryParams: string, stockParams: string, queryParams: string): Promise<ApiResponse<ProductsResponse>> {
     try {
