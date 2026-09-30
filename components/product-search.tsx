@@ -40,8 +40,11 @@ export default function ProductSearch({ products }: ProductSearchProps) {
   }
 
   return (
-    <section aria-label="Product search" className="pb-4">
-      <form onSubmit={handleSubmit} className="flex max-w-2xl gap-2">
+    <section
+      aria-label="Product search"
+      className="order-3 w-full min-w-0 md:order-2 md:ml-auto md:w-72 md:flex-none"
+    >
+      <form onSubmit={handleSubmit} className="flex w-full max-w-2xl gap-2">
         <label htmlFor="product-search" className="sr-only">
           Search products
         </label>
