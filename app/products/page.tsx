@@ -4,7 +4,7 @@ import { Star } from 'lucide-react';
 import { Suspense } from 'react';
 import ProductService from '@/services/product-service';
 import CategoryService from '@/services/category-service';
-import { productPageUrl } from '@/utils/product-query';
+import { normalizeCategories, productPageUrl } from '@/utils/product-query';
 import CatalogSearchForm from './search-form';
 
 type Props = {
@@ -22,9 +22,7 @@ export default async function ProductsPage({ searchParams }: Props) {
   const search = (params.search ?? '').trim();
   const requestedPage = Number(params.page);
   const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
-  const categories = Array.isArray(params.category)
-    ? params.category
-    : params.category ? [params.category] : [];
+  const categories = normalizeCategories(params.category);
   const filters = { search, category: categories, stock: params.stock, sort: params.sort };
 
   const [response, categoryResponse] = await Promise.all([

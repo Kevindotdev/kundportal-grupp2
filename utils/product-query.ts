@@ -1,3 +1,7 @@
+export function normalizeCategories(category?: string | string[]): string[] {
+  return (Array.isArray(category) ? category : [category]).filter((value): value is string => Boolean(value));
+}
+
 export function productPageUrl(
   pathname: '/admin' | '/products',
   filters: { search?: string; category?: string | string[]; stock?: string; sort?: string },
@@ -5,10 +9,7 @@ export function productPageUrl(
 ) {
   const params = new URLSearchParams();
   if (filters.search) params.set('search', filters.search);
-  const categories = Array.isArray(filters.category) ? filters.category : [filters.category];
-  for (const category of categories) {
-    if (category) params.append('category', category);
-  }
+  for (const category of normalizeCategories(filters.category)) params.append('category', category);
   if (filters.stock) params.set('stock', filters.stock);
   if (filters.sort) params.set('sort', filters.sort);
   params.set('page', String(page));

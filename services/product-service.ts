@@ -1,5 +1,6 @@
 import type { ApiResponse, ApiSuccessResponse, Product, ProductDeleteResponse, ProductsResponse } from '@/app/types';
 import { errorResponse } from '@/utils/error-response';
+import { normalizeCategories } from '@/utils/product-query';
 
 const API_URL = 'http://localhost:4000';
 const defaultLimit = '6';
@@ -35,8 +36,7 @@ export default class ProductService {
   // GET: Products
   static async getProducts(currentPage: number, categoryParams: string | string[], stockParams: string, queryParams: string): Promise<ApiResponse<ProductsResponse>> {
     try {
-      const categories = (Array.isArray(categoryParams) ? categoryParams : [categoryParams])
-        .filter(Boolean);
+      const categories = normalizeCategories(categoryParams);
       const url = new URL('/products', API_URL);
       url.searchParams.set('_page', String(currentPage));
       url.searchParams.set('_limit', defaultLimit);
