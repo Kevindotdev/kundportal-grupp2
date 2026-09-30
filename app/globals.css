@@ -12,6 +12,7 @@
   --primary-foreground: oklch(0.99 0.004 255);
   --success: oklch(0.48 0.14 150);
   --error: oklch(0.53 0.19 25);
+  --rating: oklch(0.769 0.188 70.08);
 }
 
 @theme inline {
@@ -26,6 +27,7 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-success: var(--success);
   --color-error: var(--error);
+  --color-rating: var(--rating);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-inter: var(--font-inter);
