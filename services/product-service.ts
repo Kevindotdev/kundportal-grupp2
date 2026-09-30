@@ -5,7 +5,7 @@ import { normalizeCategories } from '@/utils/product-query';
 const API_URL = 'http://localhost:4000';
 const defaultLimit = '6';
 
-type ProductSearchFilters = {
+type CatalogPriceStockFilters = {
   minPrice?: string;
   maxPrice?: string;
   inStock?: boolean;
@@ -45,7 +45,7 @@ export default class ProductService {
     categoryParams: string | string[],
     stockParams: string,
     queryParams: string,
-    filters: ProductSearchFilters = {},
+    filters: CatalogPriceStockFilters = {},
   ): Promise<ApiResponse<ProductsResponse>> {
     try {
       const categories = normalizeCategories(categoryParams);
