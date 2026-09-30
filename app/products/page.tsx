@@ -2,8 +2,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Star } from 'lucide-react';
 import { Suspense } from 'react';
-import StorefrontFooter from '@/components/storefront-footer';
-import StorefrontHeader from '@/components/storefront-header';
 import ProductService from '@/services/product-service';
 import { productPageUrl } from '@/utils/product-query';
 import CatalogSearchForm from './search-form';
@@ -29,17 +27,18 @@ export default async function ProductsPage({ searchParams }: Props) {
   const totalPages = response.success ? response.data.pages : 0;
 
   return (
-    <div className="storefront min-h-screen bg-background text-foreground">
-      <StorefrontHeader />
+    <>
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <h1 className="mb-6 text-2xl font-bold border-b border-border pb-6">Products</h1>
+        {/*
+          TODO: #8 Replaces this temporary form with header search.
+          Keep the searchParams → ProductService flow for shareable catalog results
+          and the filter, pagination, and sorting tickets (#13–15, #21, #37, #44).
+        */}
         <Suspense fallback={<p>Loading search…</p>}>
           <CatalogSearchForm key={search} search={search} />
         </Suspense>
 
-        {/* Temporary results and pagination for issue #21. Issue #36 can replace
-            this list with product cards and catalog controls; retain URL-backed
-            search and carry its parameter through pagination/filter links. */}
         {!response.success ? (
           <p className="mt-6" role="alert">Products could not be loaded.</p>
         ) : products.length === 0 ? (
@@ -86,7 +85,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                   <button
                     type="button"
                     disabled
-                    className="mx-4 mb-4 min-h-11 bg-foreground px-4 text-sm font-semibold text-background opacity-70"
+                    className="mx-4 mb-4 min-h-11 bg-success px-4 text-sm font-semibold text-background opacity-70"
                   >
                     Add to cart
                   </button>
@@ -96,6 +95,7 @@ export default async function ProductsPage({ searchParams }: Props) {
           </ul>
         )}
 
+        {/* Basic previous/next pagination; issue #37 adds the full catalog controls. */}
         {totalPages > 1 && (
           <nav aria-label="Product pages" className="mt-6 flex items-center gap-4">
             {page > 1 && <Link href={productPageUrl('/products', filters, page - 1)}>Previous</Link>}
@@ -104,7 +104,6 @@ export default async function ProductsPage({ searchParams }: Props) {
           </nav>
         )}
       </main>
-      <StorefrontFooter />
-    </div>
+    </>
   );
 }
