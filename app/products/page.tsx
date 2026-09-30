@@ -4,7 +4,7 @@ import { Star } from 'lucide-react';
 import { Suspense } from 'react';
 import ProductService from '@/services/product-service';
 import CategoryService from '@/services/category-service';
-import { normalizeCategories, productPageUrl } from '@/utils/product-query';
+import { normalizeCategories, productPageUrl, validatePriceRange } from '@/utils/product-query';
 import CatalogSearchForm from './search-form';
 
 type Props = {
@@ -27,6 +27,10 @@ export default async function ProductsPage({ searchParams }: Props) {
   const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
   const categories = normalizeCategories(params.category);
   const inStock = params.inStock === 'true';
+  const priceValidation = validatePriceRange(params.minPrice ?? '', params.maxPrice ?? '');
+  const hasActiveFilters = Boolean(
+    categories.length || params.minPrice || params.maxPrice || inStock || params.stock,
+  );
   const filters = {
     search,
     category: categories,
@@ -38,15 +42,17 @@ export default async function ProductsPage({ searchParams }: Props) {
   };
 
   const [response, categoryResponse] = await Promise.all([
-    ProductService.getProducts(page, categories, params.stock ?? '', search, {
-      minPrice: params.minPrice,
-      maxPrice: params.maxPrice,
-      inStock,
-    }),
+    priceValidation.error
+      ? Promise.resolve(null)
+      : ProductService.getProducts(page, categories, params.stock ?? '', search, {
+          minPrice: params.minPrice,
+          maxPrice: params.maxPrice,
+          inStock,
+        }),
     CategoryService.getAllCategories(),
   ]);
-  const products = response.success ? response.data.products : [];
-  const totalPages = response.success ? response.data.pages : 0;
+  const products = response?.success ? response.data.products : [];
+  const totalPages = response?.success ? response.data.pages : 0;
 
   return (
     <>
@@ -66,13 +72,26 @@ export default async function ProductsPage({ searchParams }: Props) {
             minPrice={params.minPrice ?? ''}
             maxPrice={params.maxPrice ?? ''}
             inStock={inStock}
+            initialPriceError={priceValidation.error ?? ''}
           />
         </Suspense>
 
-        {!response.success ? (
+        {priceValidation.error ? null : !response?.success ? (
           <p className="mt-6" role="alert">Products could not be loaded.</p>
         ) : products.length === 0 ? (
-          <p className="mt-6">No products found.</p>
+          hasActiveFilters ? (
+            <div className="mt-6">
+              <p>Inga produkter matchar dina filter</p>
+              <Link
+                href={productPageUrl('/products', { search, sort: params.sort }, 1)}
+                className="mt-2 inline-block underline"
+              >
+                Rensa filter
+              </Link>
+            </div>
+          ) : (
+            <p className="mt-6">No products found.</p>
+          )
         ) : (
           <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 2xl:grid-cols-5">
             {products.map((product, index) => (

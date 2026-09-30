@@ -2,6 +2,21 @@ export function normalizeCategories(category?: string | string[]): string[] {
   return (Array.isArray(category) ? category : [category]).filter((value): value is string => Boolean(value));
 }
 
+export function validatePriceRange(minPrice: string, maxPrice: string): { error?: string } {
+  const isValidPrice = (value: string) =>
+    value === '' || (/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value) && Number.isFinite(Number(value)));
+
+  if (!isValidPrice(minPrice) || !isValidPrice(maxPrice)) {
+    return { error: 'Ange ett giltigt pris som är noll eller högre.' };
+  }
+
+  if (minPrice && maxPrice && Number(minPrice) > Number(maxPrice)) {
+    return { error: 'Minimipriset får inte vara högre än maxpriset.' };
+  }
+
+  return {};
+}
+
 export function productPageUrl(
   pathname: '/admin' | '/products',
   filters: {
