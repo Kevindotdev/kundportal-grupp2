@@ -42,7 +42,9 @@ export default async function ProductsPage({ searchParams }: Props) {
         {!response.success ? (
           <p className="mt-6" role="alert">Products could not be loaded.</p>
         ) : products.length === 0 ? (
-          <p className="mt-6">No products found.</p>
+          <p className="mt-6">
+            {search ? `No products found for “${search}”. Try another product name.` : 'No products found.'}
+          </p>
         ) : (
           <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 2xl:grid-cols-5">
             {products.map((product, index) => (
