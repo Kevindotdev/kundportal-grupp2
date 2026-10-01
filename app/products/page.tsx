@@ -3,14 +3,16 @@ import Link from 'next/link';
 import { Star } from 'lucide-react';
 import { Suspense } from 'react';
 import ProductService from '@/services/product-service';
-import { productPageUrl } from '@/utils/product-query';
+import CategoryService from '@/services/category-service';
+import { normalizeCategories, productPageUrl } from '@/utils/product-query';
 import CatalogSearchForm from './search-form';
 
 type Props = {
   searchParams: Promise<{
     search?: string;
-    category?: string;
+    category?: string | string[];
     stock?: string;
+    sort?: string;
     page?: string;
   }>;
 };
@@ -20,9 +22,13 @@ export default async function ProductsPage({ searchParams }: Props) {
   const search = (params.search ?? '').trim();
   const requestedPage = Number(params.page);
   const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
-  const filters = { search, category: params.category, stock: params.stock };
+  const categories = normalizeCategories(params.category);
+  const filters = { search, category: categories, stock: params.stock, sort: params.sort };
 
-  const response = await ProductService.getProducts(page, params.category ?? '', params.stock ?? '', search);
+  const [response, categoryResponse] = await Promise.all([
+    ProductService.getProducts(page, categories, params.stock ?? '', search),
+    CategoryService.getAllCategories(),
+  ]);
   const products = response.success ? response.data.products : [];
   const totalPages = response.success ? response.data.pages : 0;
 
@@ -33,10 +39,15 @@ export default async function ProductsPage({ searchParams }: Props) {
         {/*
           TODO: #8 Replaces this temporary form with header search.
           Keep the searchParams → ProductService flow for shareable catalog results
-          and the filter, pagination, and sorting tickets (#13–15, #21, #37, #44).
+          and the remaining filter, pagination, and sorting tickets (#14–15, #21, #37, #44).
         */}
-        <Suspense fallback={<p>Loading search…</p>}>
-          <CatalogSearchForm key={search} search={search} />
+        <Suspense fallback={<p>Loading catalog filters…</p>}>
+          <CatalogSearchForm
+            key={`${search}:${categories.join(',')}`}
+            search={search}
+            categories={categoryResponse.success ? categoryResponse.data.categories : []}
+            selectedCategories={categories}
+          />
         </Suspense>
 
         {!response.success ? (
