@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
+import type { Product } from '@/app/types';
 import { matchesProductQuery } from '@/utils/product-search';
 
 export interface ProductSearchItem {
@@ -13,6 +14,7 @@ export interface ProductSearchItem {
   tags?: string[];
   sku?: string;
   brand?: string;
+  category?: Product['category'];
   thumbnail: string;
   price: number;
 }
