@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { connection } from 'next/server';
-import { ShoppingCart, UserRound } from 'lucide-react';
+import { UserRound } from 'lucide-react';
+import CartLink from '@/components/cart-link';
 import ProductSearch, { type ProductSearchItem } from '@/components/product-search';
 import ProductService from '@/services/product-service';
 
@@ -37,13 +38,7 @@ export default async function StorefrontHeader() {
           <ProductSearch products={searchableProducts} />
 
           <div className="order-2 flex items-center gap-2 md:order-3">
-            <span
-              role="img"
-              aria-label="Shopping cart"
-              className="inline-flex size-11 items-center justify-center"
-            >
-              <ShoppingCart aria-hidden="true" size={20} />
-            </span>
+            <CartLink />
             <Link
               href="/admin"
               aria-label="Log in"

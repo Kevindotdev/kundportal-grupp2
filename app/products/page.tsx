@@ -5,6 +5,8 @@ import { Suspense } from 'react';
 import ProductService from '@/services/product-service';
 import CategoryService from '@/services/category-service';
 import { normalizeCategories, productPageUrl } from '@/utils/product-query';
+import AddToCartButton from '@/components/add-to-cart-button';
+import CartLink from '@/components/cart-link';
 import CatalogSearchForm from './search-form';
 
 type Props = {
@@ -35,7 +37,10 @@ export default async function ProductsPage({ searchParams }: Props) {
   return (
     <>
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <h1 className="mb-6 text-2xl font-bold border-b border-border pb-6">Products</h1>
+        <div className="mb-6 flex items-center justify-between border-b border-border pb-6">
+          <h1 className="text-2xl font-bold">Products</h1>
+          <CartLink />
+        </div>
         {/*
           TODO: #8 Replaces this temporary form with header search.
           Keep the searchParams → ProductService flow for shareable catalog results
@@ -93,13 +98,14 @@ export default async function ProductsPage({ searchParams }: Props) {
                       <p className="shrink-0 font-semibold">${product.price.toFixed(2)}</p>
                     </div>
                   </Link>
-                  <button
-                    type="button"
-                    disabled
-                    className="mx-4 mb-4 min-h-11 bg-success px-4 text-sm font-semibold text-background opacity-70"
-                  >
-                    Add to cart
-                  </button>
+                  <AddToCartButton
+                    product={{
+                      id: product.id,
+                      title: product.title,
+                      price: product.price,
+                      thumbnail: product.thumbnail,
+                    }}
+                  />
                 </article>
               </li>
             ))}
