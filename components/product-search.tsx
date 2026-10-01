@@ -17,6 +17,7 @@ export interface ProductSearchItem {
   category?: Product['category'];
   thumbnail: string;
   price: number;
+  discountPercentage?: number;
 }
 
 interface ProductSearchProps {
@@ -135,7 +136,7 @@ export default function ProductSearch({ products }: ProductSearchProps) {
                     >
                       <Image src={product.thumbnail} alt="" width={48} height={48} unoptimized className="size-12 shrink-0 rounded object-cover" />
                       <span className="min-w-0 flex-1 truncate text-sm font-medium">{product.title}</span>
-                      <span className="shrink-0 text-sm text-muted-foreground">€{product.price.toFixed(2)}</span>
+                      <span className="shrink-0 text-sm text-muted-foreground">€{(product.price * (1 - (product.discountPercentage ?? 0) / 100)).toFixed(2)}</span>
                     </Link>
                   </li>
                 ))}

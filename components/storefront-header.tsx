@@ -13,7 +13,7 @@ export default async function StorefrontHeader() {
   }
 
   const searchableProducts: ProductSearchItem[] = response.data.products.map(
-    ({ id, title, tags, sku, brand, category, thumbnail, price }) => ({
+    ({ id, title, tags, sku, brand, category, thumbnail, price, discountPercentage }) => ({
       id,
       title,
       tags,
@@ -22,6 +22,7 @@ export default async function StorefrontHeader() {
       category,
       thumbnail,
       price,
+      discountPercentage,
     }),
   );
 
