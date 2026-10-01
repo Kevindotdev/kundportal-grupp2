@@ -5,6 +5,44 @@ const path = require('path');
 const LOW_STOCK_THRESHOLD = 10; // Match your LOWSTOCKTHRESHOLD
 
 module.exports = (req, res, next) => {
+    const originalQuery = url.parse(req.url, true).query;
+    const search = originalQuery.q?.trim();
+    if (req.method === 'GET' && req.path === '/products' && search) {
+        try {
+            const { products = [], categories = [] } = JSON.parse(fs.readFileSync(path.join(__dirname, 'products.json'), 'utf8'));
+            const words = search.toLowerCase().replace(/[’‘'`]/g, '').split(/\s+/);
+            const matches = products.filter(product => {
+                const category = categories.find(item => item.id === product.categoryId);
+                const stock = Number(product.stock) || 0;
+                const fields = [product.title, ...(product.tags || []), product.sku, product.brand, category?.name];
+                return (!originalQuery.categoryId || String(product.categoryId) === originalQuery.categoryId)
+                    && (!originalQuery.stock_gte || stock >= Number(originalQuery.stock_gte))
+                    && (!originalQuery.stock_lte || stock <= Number(originalQuery.stock_lte))
+                    && fields.some(field => {
+                        const fieldWords = field?.toLowerCase().replace(/[’‘'`]/g, '').split(/\s+/) || [];
+                        return fieldWords.some((_, index) => words.every((word, offset) => fieldWords[index + offset]?.startsWith(word)));
+                    });
+            });
+            const sort = originalQuery._sort || 'id';
+            const direction = originalQuery._order === 'asc' ? 1 : -1;
+            matches.sort((a, b) => (a[sort] > b[sort] ? direction : a[sort] < b[sort] ? -direction : 0));
+            const page = Math.max(1, Number(originalQuery._page) || 1);
+            const limit = Math.max(1, Number(originalQuery._limit) || matches.length || 1);
+            const total = matches.length;
+            return res.json({
+                products: matches.slice((page - 1) * limit, page * limit).map(product => ({
+                    ...product,
+                    category: categories.find(item => item.id === product.categoryId)
+                })),
+                total,
+                limit,
+                page,
+                pages: Math.ceil(total / limit)
+            });
+        } catch {
+            return res.status(500).json({ error: 'Could not search products.' });
+        }
+    }
     if (req.method === 'GET' && (req.path === '/products/stats' || req.url === '/products/stats')) {
     try {
       const dbPath = path.join(__dirname, 'products.json');
