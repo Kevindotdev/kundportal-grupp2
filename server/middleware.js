@@ -16,6 +16,8 @@ module.exports = (req, res, next) => {
                 const stock = Number(product.stock) || 0;
                 const fields = [product.title, ...(product.tags || []), product.sku, product.brand, category?.name];
                 return (!originalQuery.categoryId || String(product.categoryId) === originalQuery.categoryId)
+                    && (originalQuery.price_gte === undefined || Number(product.price) >= Number(originalQuery.price_gte))
+                    && (originalQuery.price_lte === undefined || Number(product.price) <= Number(originalQuery.price_lte))
                     && (!originalQuery.stock_gte || stock >= Number(originalQuery.stock_gte))
                     && (!originalQuery.stock_lte || stock <= Number(originalQuery.stock_lte))
                     && fields.some(field => {
