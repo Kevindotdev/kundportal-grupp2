@@ -81,7 +81,9 @@ export default async function ProductsPage({ searchParams }: Props) {
         ) : products.length === 0 ? (
           hasActiveFilters ? (
             <div className="mt-6">
-              <p>No products match your filters.</p>
+              <p>
+                {search ? `No products found for “${search}”. Try another product name.` : 'No products match your filters.'}
+              </p>
               <Link
                 href={productPageUrl('/products', { search, sort: params.sort }, 1)}
                 className="mt-2 inline-block underline"
@@ -90,7 +92,9 @@ export default async function ProductsPage({ searchParams }: Props) {
               </Link>
             </div>
           ) : (
-            <p className="mt-6">No products found.</p>
+            <p className="mt-6">
+              {search ? `No products found for “${search}”. Try another product name.` : 'No products found.'}
+            </p>
           )
         ) : (
           <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 2xl:grid-cols-5">
