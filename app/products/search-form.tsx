@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, type FormEvent } from 'react';
 import type { Category } from '@/app/types';
+import { validatePriceRange } from '@/utils/product-query';
 
 // Temporary storefront search control for issue #21. Issue #8 can move this
 // interaction into the header; keep the same `search` URL parameter and clear behavior.
@@ -10,17 +11,32 @@ export default function CatalogSearchForm({
   search,
   categories,
   selectedCategories,
+  minPrice,
+  maxPrice,
+  inStock,
+  initialPriceError,
 }: {
   search: string;
   categories: Category[];
   selectedCategories: string[];
+  minPrice: string;
+  maxPrice: string;
+  inStock: boolean;
+  initialPriceError: string;
 }) {
   const router = useRouter();
   const currentParams = useSearchParams();
   const [value, setValue] = useState(search);
+  const [minimum, setMinimum] = useState(minPrice);
+  const [maximum, setMaximum] = useState(maxPrice);
+  const [priceError, setPriceError] = useState(initialPriceError);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const validation = validatePriceRange(minimum, maximum);
+    setPriceError(validation.error ?? '');
+    if (validation.error) return;
+
     const params = new URLSearchParams(currentParams.toString());
     const term = value.trim();
 
@@ -33,12 +49,21 @@ export default function CatalogSearchForm({
       params.append('category', String(category));
     }
 
-    params.delete('page');
+    if (minimum) params.set('minPrice', minimum);
+    else params.delete('minPrice');
+
+    if (maximum) params.set('maxPrice', maximum);
+    else params.delete('maxPrice');
+
+    if (formData.has('inStock')) params.set('inStock', 'true');
+    else params.delete('inStock');
+
+    params.set('page', '1');
     router.push(`/products${params.size ? `?${params.toString()}` : ''}`);
   }
 
   return (
-    <form onSubmit={submit} className="flex flex-wrap items-end gap-3">
+    <form onSubmit={submit} noValidate className="flex flex-wrap items-end gap-3">
       <div className="flex flex-col gap-1">
         <label htmlFor="catalog-search">Search products</label>
         <input
@@ -49,6 +74,51 @@ export default function CatalogSearchForm({
           className="rounded border border-border px-3 py-2"
         />
       </div>
+      <div className="flex flex-col gap-1">
+        <label htmlFor="catalog-min-price">Minimum price</label>
+        <input
+          id="catalog-min-price"
+          name="minPrice"
+          type="text"
+          inputMode="decimal"
+          value={minimum}
+          onChange={(event) => {
+            const nextValue = event.target.value;
+            setMinimum(nextValue);
+            setPriceError(validatePriceRange(nextValue, maximum).error ?? '');
+          }}
+          aria-invalid={Boolean(priceError)}
+          aria-describedby={priceError ? 'price-filter-error' : undefined}
+          className="w-32 rounded border border-border px-3 py-2"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
+        <label htmlFor="catalog-max-price">Maximum price</label>
+        <input
+          id="catalog-max-price"
+          name="maxPrice"
+          type="text"
+          inputMode="decimal"
+          value={maximum}
+          onChange={(event) => {
+            const nextValue = event.target.value;
+            setMaximum(nextValue);
+            setPriceError(validatePriceRange(minimum, nextValue).error ?? '');
+          }}
+          aria-invalid={Boolean(priceError)}
+          aria-describedby={priceError ? 'price-filter-error' : undefined}
+          className="w-32 rounded border border-border px-3 py-2"
+        />
+      </div>
+      <label className="flex items-center gap-2">
+        <input type="checkbox" name="inStock" value="true" defaultChecked={inStock} className="size-4 accent-primary" />
+        In stock only
+      </label>
+      {priceError && (
+        <p id="price-filter-error" role="alert" className="min-w-full text-sm text-red-700">
+          {priceError}
+        </p>
+      )}
       {categories.length > 0 && (
         <fieldset className="flex min-w-full flex-wrap gap-x-4 gap-y-2">
           <legend className="mb-1 text-sm font-medium">Categories</legend>

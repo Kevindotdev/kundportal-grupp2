@@ -4,7 +4,7 @@ import { Star } from 'lucide-react';
 import { Suspense } from 'react';
 import ProductService from '@/services/product-service';
 import CategoryService from '@/services/category-service';
-import { normalizeCategories, productPageUrl } from '@/utils/product-query';
+import { normalizeCategories, productPageUrl, validatePriceRange } from '@/utils/product-query';
 import AddToCartButton from '@/components/add-to-cart-button';
 import CartLink from '@/components/cart-link';
 import CatalogSearchForm from './search-form';
@@ -15,6 +15,9 @@ type Props = {
     category?: string | string[];
     stock?: string;
     sort?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    inStock?: string;
     page?: string;
   }>;
 };
@@ -25,14 +28,33 @@ export default async function ProductsPage({ searchParams }: Props) {
   const requestedPage = Number(params.page);
   const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
   const categories = normalizeCategories(params.category);
-  const filters = { search, category: categories, stock: params.stock, sort: params.sort };
+  const inStock = params.inStock === 'true';
+  const priceValidation = validatePriceRange(params.minPrice ?? '', params.maxPrice ?? '');
+  const hasActiveFilters = Boolean(
+    categories.length || params.minPrice || params.maxPrice || inStock || params.stock,
+  );
+  const filters = {
+    search,
+    category: categories,
+    stock: params.stock,
+    sort: params.sort,
+    minPrice: params.minPrice,
+    maxPrice: params.maxPrice,
+    inStock,
+  };
 
   const [response, categoryResponse] = await Promise.all([
-    ProductService.getProducts(page, categories, params.stock ?? '', search),
+    priceValidation.error
+      ? Promise.resolve(null)
+      : ProductService.getProducts(page, categories, params.stock ?? '', search, {
+          minPrice: params.minPrice,
+          maxPrice: params.maxPrice,
+          inStock,
+        }),
     CategoryService.getAllCategories(),
   ]);
-  const products = response.success ? response.data.products : [];
-  const totalPages = response.success ? response.data.pages : 0;
+  const products = response?.success ? response.data.products : [];
+  const totalPages = response?.success ? response.data.pages : 0;
 
   return (
     <>
@@ -48,17 +70,37 @@ export default async function ProductsPage({ searchParams }: Props) {
         */}
         <Suspense fallback={<p>Loading catalog filters…</p>}>
           <CatalogSearchForm
-            key={`${search}:${categories.join(',')}`}
+            key={`${search}:${categories.join(',')}:${params.minPrice ?? ''}:${params.maxPrice ?? ''}:${inStock}`}
             search={search}
             categories={categoryResponse.success ? categoryResponse.data.categories : []}
             selectedCategories={categories}
+            minPrice={params.minPrice ?? ''}
+            maxPrice={params.maxPrice ?? ''}
+            inStock={inStock}
+            initialPriceError={priceValidation.error ?? ''}
           />
         </Suspense>
 
-        {!response.success ? (
+        {priceValidation.error ? null : !response?.success ? (
           <p className="mt-6" role="alert">Products could not be loaded.</p>
         ) : products.length === 0 ? (
-          <p className="mt-6">No products found.</p>
+          hasActiveFilters ? (
+            <div className="mt-6">
+              <p>
+                {search ? `No products found for “${search}”. Try another product name.` : 'No products match your filters.'}
+              </p>
+              <Link
+                href={productPageUrl('/products', { search, sort: params.sort }, 1)}
+                className="mt-2 inline-block underline"
+              >
+                Clear filters
+              </Link>
+            </div>
+          ) : (
+            <p className="mt-6">
+              {search ? `No products found for “${search}”. Try another product name.` : 'No products found.'}
+            </p>
+          )
         ) : (
           <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 2xl:grid-cols-5">
             {products.map((product, index) => (
