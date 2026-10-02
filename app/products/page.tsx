@@ -6,7 +6,6 @@ import ProductService from '@/services/product-service';
 import CategoryService from '@/services/category-service';
 import { normalizeCategories, productPageUrl, validatePriceRange } from '@/utils/product-query';
 import AddToCartButton from '@/components/add-to-cart-button';
-import CartLink from '@/components/cart-link';
 import CatalogSearchForm from './search-form';
 
 type Props = {
@@ -59,9 +58,8 @@ export default async function ProductsPage({ searchParams }: Props) {
   return (
     <>
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mb-6 flex items-center justify-between border-b border-border pb-6">
+        <div className="mb-6 border-b border-border pb-6">
           <h1 className="text-2xl font-bold">Products</h1>
-          <CartLink />
         </div>
         {/*
           TODO: #8 Replaces this temporary form with header search.
