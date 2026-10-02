@@ -81,12 +81,12 @@ export default async function ProductsPage({ searchParams }: Props) {
         ) : products.length === 0 ? (
           hasActiveFilters ? (
             <div className="mt-6">
-              <p>Inga produkter matchar dina filter</p>
+              <p>No products match your filters.</p>
               <Link
                 href={productPageUrl('/products', { search, sort: params.sort }, 1)}
                 className="mt-2 inline-block underline"
               >
-                Rensa filter
+                Clear filters
               </Link>
             </div>
           ) : (

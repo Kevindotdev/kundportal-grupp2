@@ -7,11 +7,11 @@ export function validatePriceRange(minPrice: string, maxPrice: string): { error?
     value === '' || (/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value) && Number.isFinite(Number(value)));
 
   if (!isValidPrice(minPrice) || !isValidPrice(maxPrice)) {
-    return { error: 'Ange ett giltigt pris som är noll eller högre.' };
+    return { error: 'Enter a valid price of zero or higher.' };
   }
 
   if (minPrice && maxPrice && Number(minPrice) > Number(maxPrice)) {
-    return { error: 'Minimipriset får inte vara högre än maxpriset.' };
+    return { error: 'The minimum price must not exceed the maximum price.' };
   }
 
   return {};

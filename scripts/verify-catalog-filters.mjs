@@ -81,13 +81,13 @@ assert(invalidTextPrice.includes('name="minPrice"') && invalidTextPrice.includes
 assert(invalidNegativePrice.includes('value="-5"'), 'A negative price should remain editable with its URL value.');
 assert(invalidMaxPrice.includes('name="maxPrice"') && invalidMaxPrice.includes('value="not-a-price"'), 'A non-numeric maximum should remain editable with its URL value.');
 assert(invalidPriceOrder.includes('value="20"') && invalidPriceOrder.includes('value="10"'), 'A reversed price range should retain both entered values.');
-assert(emptyFilteredPage.includes('Inga produkter matchar dina filter'), 'An empty filtered catalog should show the specified Swedish message.');
-const clearHref = emptyFilteredPage.match(/<a\b[^>]*href="([^"]+)"[^>]*>Rensa filter<\/a>/)?.[1];
+assert(emptyFilteredPage.includes('No products match your filters.'), 'An empty filtered catalog should show the English message.');
+const clearHref = emptyFilteredPage.match(/<a\b[^>]*href="([^"]+)"[^>]*>Clear filters<\/a>/)?.[1];
 assert(clearHref, 'An empty filtered catalog should offer a clear-filters action.');
 assert(clearHref === '/products?search=no-such-product&amp;sort=price&amp;page=1', 'Clearing should preserve search and sort, remove every filter, and reset to page one.');
 const clearedPage = await page(clearHref.replaceAll('&amp;', '&'));
 assert(clearedPage.includes('No products found.'), 'Following the clear action should load the search-only results.');
 assert(!clearedPage.includes('category=') && !clearedPage.includes('minPrice=') && !clearedPage.includes('maxPrice=') && !clearedPage.includes('inStock=') && !clearedPage.includes('stock='), 'The clear action should remove category, price, and stock parameters.');
-assert(emptySearchOnly.includes('No products found.') && !emptySearchOnly.includes('Rensa filter'), 'Search-only empty results should keep the existing search message without a no-op clear action.');
+assert(emptySearchOnly.includes('No products found.') && !emptySearchOnly.includes('Clear filters'), 'Search-only empty results should keep the existing search message without a no-op clear action.');
 
 console.log('Catalog category, search, price validation, empty state, and page-boundary checks passed.');
