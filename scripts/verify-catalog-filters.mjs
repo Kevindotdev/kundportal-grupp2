@@ -35,6 +35,13 @@ const zeroMinimum = await page('/products?category=1&category=2&search=a&minPric
 const firstPageDocument = await document('/products?category=1&category=2');
 const allProductsDocument = await document('/products');
 const allProducts = await page('/products');
+const invalidTextPrice = await page('/products?search=a&minPrice=abc');
+const invalidNegativePrice = await page('/products?search=a&minPrice=-5');
+const invalidMaxPrice = await page('/products?search=a&maxPrice=not-a-price');
+const invalidOverflowPrice = await page('/products?search=a&minPrice=9'.padEnd(1000, '9'));
+const invalidPriceOrder = await page('/products?search=a&minPrice=20&maxPrice=10');
+const emptyFilteredPage = await page('/products?search=no-such-product&category=1&minPrice=5&maxPrice=25&inStock=true&stock=inStock&sort=price&page=3');
+const emptySearchOnly = await page('/products?search=no-such-product');
 
 assert((firstPage.match(/<h2/g) ?? []).length === 6, 'The first OR-filtered page should contain 6 products.');
 assert((secondPage.match(/<h2/g) ?? []).length === 4, 'The second OR-filtered page should contain the remaining 4 products.');
@@ -66,5 +73,21 @@ assert(zeroMinimum.includes('minPrice=0&amp;maxPrice=129.99&amp;inStock=true&amp
 assert((firstPageDocument.match(/checked=""/g) ?? []).length === 2, 'Both selected categories should be restored in the form.');
 assert((allProducts.match(/<h2/g) ?? []).length === 6, 'An unfiltered catalog should show the first page of all products.');
 assert(!allProductsDocument.includes('checked=""'), 'The unfiltered catalog should have no category selected.');
+for (const invalidPrices of [invalidTextPrice, invalidNegativePrice, invalidMaxPrice, invalidOverflowPrice, invalidPriceOrder]) {
+  assert(invalidPrices.includes('role="alert"'), 'Invalid URL prices should show a clear validation error.');
+  assert(!invalidPrices.includes('<h2'), 'Invalid URL prices must not display misleading product results.');
+}
+assert(invalidTextPrice.includes('name="minPrice"') && invalidTextPrice.includes('value="abc"'), 'A non-numeric minimum should remain editable with its URL value.');
+assert(invalidNegativePrice.includes('value="-5"'), 'A negative price should remain editable with its URL value.');
+assert(invalidMaxPrice.includes('name="maxPrice"') && invalidMaxPrice.includes('value="not-a-price"'), 'A non-numeric maximum should remain editable with its URL value.');
+assert(invalidPriceOrder.includes('value="20"') && invalidPriceOrder.includes('value="10"'), 'A reversed price range should retain both entered values.');
+assert(emptyFilteredPage.includes('No products match your filters.'), 'An empty filtered catalog should show the English message.');
+const clearHref = emptyFilteredPage.match(/<a\b[^>]*href="([^"]+)"[^>]*>Clear filters<\/a>/)?.[1];
+assert(clearHref, 'An empty filtered catalog should offer a clear-filters action.');
+assert(clearHref === '/products?search=no-such-product&amp;sort=price&amp;page=1', 'Clearing should preserve search and sort, remove every filter, and reset to page one.');
+const clearedPage = await page(clearHref.replaceAll('&amp;', '&'));
+assert(clearedPage.includes('No products found.'), 'Following the clear action should load the search-only results.');
+assert(!clearedPage.includes('category=') && !clearedPage.includes('minPrice=') && !clearedPage.includes('maxPrice=') && !clearedPage.includes('inStock=') && !clearedPage.includes('stock='), 'The clear action should remove category, price, and stock parameters.');
+assert(emptySearchOnly.includes('No products found.') && !emptySearchOnly.includes('Clear filters'), 'Search-only empty results should keep the existing search message without a no-op clear action.');
 
-console.log('Catalog category, search, price, stock, and page-boundary checks passed.');
+console.log('Catalog category, search, price validation, empty state, and page-boundary checks passed.');
