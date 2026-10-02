@@ -1,8 +1,15 @@
 import type { ApiResponse, ApiSuccessResponse, Product, ProductDeleteResponse, ProductsResponse } from '@/app/types';
 import { errorResponse } from '@/utils/error-response';
+import { normalizeCategories } from '@/utils/product-query';
 
 const API_URL = 'http://localhost:4000';
 const defaultLimit = '6';
+
+type CatalogPriceStockFilters = {
+  minPrice?: string;
+  maxPrice?: string;
+  inStock?: boolean;
+};
 
 export default class ProductService {
   static async getAllProducts(): Promise<ApiResponse<ProductsResponse>> {
@@ -33,16 +40,26 @@ export default class ProductService {
   }
 
   // GET: Products
-  static async getProducts(currentPage: number, categoryParams: string, stockParams: string, queryParams: string): Promise<ApiResponse<ProductsResponse>> {
+  static async getProducts(
+    currentPage: number,
+    categoryParams: string | string[],
+    stockParams: string,
+    queryParams: string,
+    filters: CatalogPriceStockFilters = {},
+  ): Promise<ApiResponse<ProductsResponse>> {
     try {
+      const categories = normalizeCategories(categoryParams);
       const url = new URL('/products', API_URL);
       url.searchParams.set('_page', String(currentPage));
       url.searchParams.set('_limit', defaultLimit);
       url.searchParams.set('_sort', 'id');
       url.searchParams.set('_order', 'desc');
       url.searchParams.set('_expand', 'category');
-      if (categoryParams) url.searchParams.set('categoryId', categoryParams);
+      for (const category of categories) url.searchParams.append('categoryId', category);
       if (queryParams) url.searchParams.set('q', queryParams);
+      if (filters.minPrice !== undefined && filters.minPrice !== '') url.searchParams.set('price_gte', filters.minPrice);
+      if (filters.maxPrice !== undefined && filters.maxPrice !== '') url.searchParams.set('price_lte', filters.maxPrice);
+      if (filters.inStock) url.searchParams.set('stock_gte', '1');
       if (stockParams === 'inStock') url.searchParams.set('stock_gte', '10');
       if (stockParams === 'lowStock') {
         url.searchParams.set('stock_gte', '1');
@@ -50,11 +67,9 @@ export default class ProductService {
       }
       if (stockParams === 'outofStock') url.searchParams.set('stock_lte', '0');
 
-      const response = await fetch(url, {
-        method: 'GET',
-      });
-
-      const result = await response.json();
+      const response = await fetch(url, { method: 'GET' });
+      if (!response.ok) throw new Error(`Products could not be loaded (HTTP ${response.status}).`);
+      const result = await response.json() as ProductsResponse;
 
       return {
         success: true,
