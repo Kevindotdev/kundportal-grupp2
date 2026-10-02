@@ -1,6 +1,7 @@
 const url = require("url");
 const fs = require('fs');
 const path = require('path');
+const { matchesProductQuery } = require('../utils/product-search-shared.js');
 
 const LOW_STOCK_THRESHOLD = 10; // Match your LOWSTOCKTHRESHOLD
 
@@ -10,20 +11,15 @@ module.exports = (req, res, next) => {
     if (req.method === 'GET' && req.path === '/products' && search) {
         try {
             const { products = [], categories = [] } = JSON.parse(fs.readFileSync(path.join(__dirname, 'products.json'), 'utf8'));
-            const words = search.toLowerCase().replace(/[’‘'`]/g, '').split(/\s+/);
             const matches = products.filter(product => {
                 const category = categories.find(item => item.id === product.categoryId);
                 const stock = Number(product.stock) || 0;
-                const fields = [product.title, ...(product.tags || []), product.sku, product.brand, category?.name];
                 return (!originalQuery.categoryId || String(product.categoryId) === originalQuery.categoryId)
                     && (originalQuery.price_gte === undefined || Number(product.price) >= Number(originalQuery.price_gte))
                     && (originalQuery.price_lte === undefined || Number(product.price) <= Number(originalQuery.price_lte))
                     && (!originalQuery.stock_gte || stock >= Number(originalQuery.stock_gte))
                     && (!originalQuery.stock_lte || stock <= Number(originalQuery.stock_lte))
-                    && fields.some(field => {
-                        const fieldWords = field?.toLowerCase().replace(/[’‘'`]/g, '').split(/\s+/) || [];
-                        return fieldWords.some((_, index) => words.every((word, offset) => fieldWords[index + offset]?.startsWith(word)));
-                    });
+                    && matchesProductQuery({ ...product, category }, search);
             });
             const sort = originalQuery._sort || 'id';
             const direction = originalQuery._order === 'asc' ? 1 : -1;
