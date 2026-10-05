@@ -3,7 +3,7 @@ import { errorResponse } from '@/utils/error-response';
 import { normalizeCategories } from '@/utils/product-query';
 
 const API_URL = 'http://localhost:4000';
-const defaultLimit = '6';
+const defaultLimit = 6;
 
 type CatalogPriceStockFilters = {
   minPrice?: string;
@@ -46,12 +46,13 @@ export default class ProductService {
     stockParams: string,
     queryParams: string,
     filters: CatalogPriceStockFilters = {},
+    pageSize = defaultLimit,
   ): Promise<ApiResponse<ProductsResponse>> {
     try {
       const categories = normalizeCategories(categoryParams);
       const url = new URL('/products', API_URL);
       url.searchParams.set('_page', String(currentPage));
-      url.searchParams.set('_limit', defaultLimit);
+      url.searchParams.set('_limit', String(pageSize));
       url.searchParams.set('_sort', 'id');
       url.searchParams.set('_order', 'desc');
       url.searchParams.set('_expand', 'category');

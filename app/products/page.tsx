@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductService from '@/services/product-service';
 import CategoryService from '@/services/category-service';
 import { normalizeCategories, productPageUrl, validatePriceRange } from '@/utils/product-query';
@@ -18,6 +19,59 @@ type Props = {
     page?: string;
   }>;
 };
+
+const catalogPageSize = 20;
+
+function ProductPagination({ page, totalPages, filters }: {
+  page: number;
+  totalPages: number;
+  filters: Parameters<typeof productPageUrl>[1];
+}) {
+  const buttonClass = 'inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-sm font-medium transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+  const arrowClass = 'inline-flex h-10 w-10 items-center justify-center rounded-md border border-border transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+  const disabledClass = 'inline-flex h-10 w-10 cursor-not-allowed items-center justify-center rounded-md border border-border text-sm text-muted-foreground';
+  const disabledArrowClass = 'inline-flex h-10 w-10 cursor-not-allowed items-center justify-center rounded-md border border-border text-muted-foreground';
+  const middleStart = Math.max(2, Math.min(page - 1, totalPages - 3));
+  const pageNumbers = totalPages <= 5
+    ? Array.from({ length: totalPages }, (_, index) => index + 1)
+    : [1, middleStart, middleStart + 1, middleStart + 2, totalPages];
+  const pageHref = (pageNumber: number) => productPageUrl('/products', filters, pageNumber);
+
+  return (
+    <nav aria-label="Product pages" className="my-6 flex flex-wrap items-center justify-center gap-2 lg:justify-start">
+      <span className="sr-only">Page {page} of {totalPages}</span>
+      {page > 1 ? (
+        <Link aria-label="Previous page" className={arrowClass} href={pageHref(page - 1)} scroll={false}>
+          <ChevronLeft aria-hidden="true" size={18} />
+        </Link>
+      ) : (
+        <span aria-disabled="true" aria-label="Previous page" className={disabledArrowClass}>
+          <ChevronLeft aria-hidden="true" size={18} />
+        </span>
+      )}
+      {pageNumbers.map((pageNumber) => (
+        pageNumber === page ? (
+          <span key={pageNumber} aria-current="page" aria-label={`Page ${pageNumber}`} className={`${disabledClass} bg-primary text-primary-foreground`}>
+            {pageNumber}
+          </span>
+        ) : (
+          <Link key={pageNumber} aria-label={`Go to page ${pageNumber}`} className={buttonClass} href={pageHref(pageNumber)} scroll={false}>
+            {pageNumber}
+          </Link>
+        )
+      ))}
+      {page < totalPages ? (
+        <Link aria-label="Next page" className={arrowClass} href={pageHref(page + 1)} scroll={false}>
+          <ChevronRight aria-hidden="true" size={18} />
+        </Link>
+      ) : (
+        <span aria-disabled="true" aria-label="Next page" className={disabledArrowClass}>
+          <ChevronRight aria-hidden="true" size={18} />
+        </span>
+      )}
+    </nav>
+  );
+}
 
 export default async function ProductsPage({ searchParams }: Props) {
   const params = await searchParams;
@@ -47,7 +101,7 @@ export default async function ProductsPage({ searchParams }: Props) {
           minPrice: params.minPrice,
           maxPrice: params.maxPrice,
           inStock,
-        }),
+        }, catalogPageSize),
     CategoryService.getAllCategories(),
   ]);
   const products = response?.success ? response.data.products : [];
@@ -98,22 +152,17 @@ export default async function ProductsPage({ searchParams }: Props) {
             </p>
           )
         ) : (
-          <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 2xl:grid-cols-5">
-            {products.map((product, index) => (
-              <li key={product.id} className="group">
-                <ProductCard product={product} eager={index === 0} />
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {/* Basic previous/next pagination; issue #37 adds the full catalog controls. */}
-        {totalPages > 1 && (
-          <nav aria-label="Product pages" className="mt-6 flex items-center gap-4">
-            {page > 1 && <Link href={productPageUrl('/products', filters, page - 1)}>Previous</Link>}
-            <span>Page {page} of {totalPages}</span>
-            {page < totalPages && <Link href={productPageUrl('/products', filters, page + 1)}>Next</Link>}
-          </nav>
+          <>
+            {totalPages > 1 && <ProductPagination page={page} totalPages={totalPages} filters={filters} />}
+            <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-6 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4 2xl:grid-cols-5">
+              {products.map((product, index) => (
+                <li key={product.id} className="group">
+                  <ProductCard product={product} eager={index === 0} />
+                </li>
+              ))}
+            </ul>
+            {totalPages > 1 && <ProductPagination page={page} totalPages={totalPages} filters={filters} />}
+          </>
         )}
       </main>
     </>
