@@ -22,10 +22,11 @@ type Props = {
 
 const catalogPageSize = 20;
 
-function ProductPagination({ page, totalPages, filters }: {
+function ProductPagination({ page, totalPages, filters, scrollToBottom = false }: {
   page: number;
   totalPages: number;
   filters: Parameters<typeof productPageUrl>[1];
+  scrollToBottom?: boolean;
 }) {
   const buttonClass = 'inline-flex h-10 w-10 items-center justify-center rounded-md border border-border text-sm font-medium transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
   const arrowClass = 'inline-flex h-10 w-10 items-center justify-center rounded-md border border-border transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
@@ -35,13 +36,13 @@ function ProductPagination({ page, totalPages, filters }: {
   const pageNumbers = totalPages <= 5
     ? Array.from({ length: totalPages }, (_, index) => index + 1)
     : [1, middleStart, middleStart + 1, middleStart + 2, totalPages];
-  const pageHref = (pageNumber: number) => productPageUrl('/products', filters, pageNumber);
+  const pageHref = (pageNumber: number) => `${productPageUrl('/products', filters, pageNumber)}${scrollToBottom ? '#pg-btm' : ''}`;
 
   return (
     <nav aria-label="Product pages" className="my-6 flex flex-wrap items-center justify-center gap-2 lg:justify-start">
       <span className="sr-only">Page {page} of {totalPages}</span>
       {page > 1 ? (
-        <Link aria-label="Previous page" className={arrowClass} href={pageHref(page - 1)} scroll={false}>
+        <Link aria-label="Previous page" className={arrowClass} href={pageHref(page - 1)} scroll={scrollToBottom}>
           <ChevronLeft aria-hidden="true" size={18} />
         </Link>
       ) : (
@@ -55,13 +56,13 @@ function ProductPagination({ page, totalPages, filters }: {
             {pageNumber}
           </span>
         ) : (
-          <Link key={pageNumber} aria-label={`Go to page ${pageNumber}`} className={buttonClass} href={pageHref(pageNumber)} scroll={false}>
+          <Link key={pageNumber} aria-label={`Go to page ${pageNumber}`} className={buttonClass} href={pageHref(pageNumber)} scroll={scrollToBottom}>
             {pageNumber}
           </Link>
         )
       ))}
       {page < totalPages ? (
-        <Link aria-label="Next page" className={arrowClass} href={pageHref(page + 1)} scroll={false}>
+        <Link aria-label="Next page" className={arrowClass} href={pageHref(page + 1)} scroll={scrollToBottom}>
           <ChevronRight aria-hidden="true" size={18} />
         </Link>
       ) : (
@@ -161,7 +162,12 @@ export default async function ProductsPage({ searchParams }: Props) {
                 </li>
               ))}
             </ul>
-            {totalPages > 1 && <ProductPagination page={page} totalPages={totalPages} filters={filters} />}
+            {totalPages > 1 && (
+              <>
+                <ProductPagination page={page} totalPages={totalPages} filters={filters} scrollToBottom />
+                <span id="pg-btm" aria-hidden="true" className="block h-px" style={{ scrollMarginTop: 'calc(100dvh - 1rem)' }} />
+              </>
+            )}
           </>
         )}
       </main>
