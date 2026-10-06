@@ -20,7 +20,7 @@ export default async function StorefrontMain() {
       >
         <div className="max-w-2xl">
           <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-primary">
-            Welcome to Webshop
+            Welcome to Nordic Retail Group
           </p>
           <h1 id="home-heading" className="text-4xl font-bold tracking-tight sm:text-5xl">
             Find something you’ll love.
