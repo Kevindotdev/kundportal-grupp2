@@ -37,6 +37,10 @@ export default async function StorefrontMain() {
         </div>
       </section>
 
+      <p className="border border-border bg-muted px-4 py-3 text-center text-sm font-medium text-foreground">
+        Free shipping on orders over $50
+      </p>
+
       <section aria-labelledby="categories-heading">
         <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
           <div>
