@@ -141,7 +141,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                 {search ? `No products found for “${search}”. Try another product name.` : 'No products match your filters.'}
               </p>
               <Link
-                href={productPageUrl('/products', { search, sort: params.sort }, 1)}
+                href={productPageUrl('/products', { search, stock: params.stock, sort: params.sort }, 1)}
                 className="mt-2 inline-block underline"
               >
                 Clear filters

@@ -10,6 +10,10 @@ export default class CategoryService {
         method: 'GET',
       });
 
+      if (!response.ok) {
+        return errorResponse(`Categories could not be loaded (HTTP ${response.status}).`);
+      }
+
       const result = await response.json();
       return {
         success: true,
