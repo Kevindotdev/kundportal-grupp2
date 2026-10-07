@@ -10,14 +10,18 @@ export default class CategoryService {
         method: 'GET',
       });
 
-      const result = await response.json();
+      if (!response.ok) {
+        return errorResponse(`Categories could not be loaded (HTTP ${response.status}).`);
+      }
+
+      const result = await response.json() as CategoryResponse['categories'];
       return {
         success: true,
         data: {
           categories: result,
         },
       } satisfies ApiSuccessResponse<CategoryResponse>;
-    } catch (error) {
+    } catch {
       return errorResponse('Kunde inte ansluta till servern.');
     }
   }
