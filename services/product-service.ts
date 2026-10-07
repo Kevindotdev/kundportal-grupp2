@@ -11,7 +11,31 @@ type CatalogPriceStockFilters = {
   inStock?: boolean;
 };
 
+export type ProductByIdResponse =
+  | { success: true; data: Product }
+  | { success: false; status?: number; message: string };
+
 export default class ProductService {
+  static async getProductById(productId: number): Promise<ProductByIdResponse> {
+    try {
+      const url = new URL(`/products/${productId}`, API_URL);
+      url.searchParams.set('_expand', 'category');
+      const response = await fetch(url, { method: 'GET', cache: 'no-store' });
+
+      if (!response.ok) {
+        return {
+          success: false,
+          status: response.status,
+          message: response.status === 404 ? 'Product not found.' : 'The product service is temporarily unavailable.',
+        };
+      }
+
+      return { success: true, data: await response.json() as Product };
+    } catch {
+      return { success: false, message: 'The product service is temporarily unavailable.' };
+    }
+  }
+
   static async getAllProducts(): Promise<ApiResponse<ProductsResponse>> {
     try {
       const url = new URL('/products', API_URL);
