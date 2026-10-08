@@ -7,6 +7,7 @@ import { Search } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import type { Product } from '@/app/types';
 import { matchesProductQuery } from '@/utils/product-search';
+import { discountedPrice } from '@/utils/product-price';
 
 export interface ProductSearchItem {
   id: number;
@@ -136,7 +137,7 @@ export default function ProductSearch({ products }: ProductSearchProps) {
                     >
                       <Image src={product.thumbnail} alt="" width={48} height={48} unoptimized className="size-12 shrink-0 rounded object-cover" />
                       <span className="min-w-0 flex-1 truncate text-sm font-medium">{product.title}</span>
-                      <span className="shrink-0 text-sm text-muted-foreground">€{(product.price * (1 - (product.discountPercentage ?? 0) / 100)).toFixed(2)}</span>
+                      <span className="shrink-0 text-sm text-muted-foreground">${discountedPrice(product).toFixed(2)}</span>
                     </Link>
                   </li>
                 ))}

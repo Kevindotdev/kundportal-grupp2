@@ -1,6 +1,7 @@
 import type { ApiResponse, ApiSuccessResponse, Product, ProductDeleteResponse, ProductsResponse } from '@/app/types';
 import { errorResponse } from '@/utils/error-response';
 import { normalizeCategories } from '@/utils/product-query';
+import { discountedPrice } from '@/utils/product-price';
 
 const API_URL = 'http://localhost:4000';
 const defaultLimit = 6;
@@ -51,15 +52,18 @@ export default class ProductService {
     try {
       const categories = normalizeCategories(categoryParams);
       const url = new URL('/products', API_URL);
-      url.searchParams.set('_page', String(currentPage));
-      url.searchParams.set('_limit', String(pageSize));
+      const filterByDiscountedPrice = Boolean(filters.minPrice || filters.maxPrice);
+      if (!filterByDiscountedPrice) {
+        url.searchParams.set('_page', String(currentPage));
+        url.searchParams.set('_limit', String(pageSize));
+      }
       url.searchParams.set('_sort', 'id');
       url.searchParams.set('_order', 'desc');
       url.searchParams.set('_expand', 'category');
       for (const category of categories) url.searchParams.append('categoryId', category);
       if (queryParams) url.searchParams.set('q', queryParams);
-      if (filters.minPrice !== undefined && filters.minPrice !== '') url.searchParams.set('price_gte', filters.minPrice);
-      if (filters.maxPrice !== undefined && filters.maxPrice !== '') url.searchParams.set('price_lte', filters.maxPrice);
+      if (!filterByDiscountedPrice && filters.minPrice !== undefined && filters.minPrice !== '') url.searchParams.set('price_gte', filters.minPrice);
+      if (!filterByDiscountedPrice && filters.maxPrice !== undefined && filters.maxPrice !== '') url.searchParams.set('price_lte', filters.maxPrice);
       if (stockParams === 'inStock') url.searchParams.set('stock_gte', '10');
       else if (stockParams === 'lowStock') {
         url.searchParams.set('stock_gte', '1');
@@ -71,6 +75,20 @@ export default class ProductService {
       const response = await fetch(url, { method: 'GET' });
       if (!response.ok) throw new Error(`Products could not be loaded (HTTP ${response.status}).`);
       const result = await response.json() as ProductsResponse;
+      if (filterByDiscountedPrice) {
+        const minPrice = filters.minPrice === undefined || filters.minPrice === '' ? -Infinity : Number(filters.minPrice);
+        const maxPrice = filters.maxPrice === undefined || filters.maxPrice === '' ? Infinity : Number(filters.maxPrice);
+        const matchingProducts = result.products.filter((product) => {
+          const price = Number(discountedPrice(product).toFixed(2));
+          return price >= minPrice && price <= maxPrice;
+        });
+        const start = (currentPage - 1) * pageSize;
+        result.products = matchingProducts.slice(start, start + pageSize);
+        result.total = matchingProducts.length;
+        result.limit = pageSize;
+        result.page = currentPage;
+        result.pages = Math.ceil(matchingProducts.length / pageSize);
+      }
 
       return {
         success: true,
