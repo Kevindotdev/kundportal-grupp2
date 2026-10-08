@@ -18,6 +18,8 @@ export default function CartLink() {
   useEffect(() => {
     if (!isOpen) return;
     const trigger = triggerRef.current;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     closeRef.current?.focus();
     function closeOnEscape(event: KeyboardEvent) {
       if (event.key === 'Escape') setIsOpen(false);
@@ -37,6 +39,7 @@ export default function CartLink() {
     window.addEventListener('keydown', closeOnEscape);
     return () => {
       window.removeEventListener('keydown', closeOnEscape);
+      document.body.style.overflow = previousOverflow;
       trigger?.focus();
     };
   }, [isOpen]);
@@ -92,7 +95,7 @@ export default function CartLink() {
               <X aria-hidden="true" size={20} />
             </button>
           </header>
-          <div className="flex-1 overflow-y-auto p-5">
+          <div className="flex-1 overflow-y-auto p-5 [scrollbar-color:var(--border)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border">
             {!isReady ? (
               <p role="status">Loading your cart…</p>
             ) : storageError ? (
