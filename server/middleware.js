@@ -9,7 +9,8 @@ const LOW_STOCK_THRESHOLD = 10; // Match your LOWSTOCKTHRESHOLD
 
 module.exports = (req, res, next) => {
     const originalQuery = url.parse(req.url, true).query;
-    if (req.method === 'GET' && req.path === '/demo-orders/best-sellers') {
+    const requestPath = req.path.replace(/\/+$/, '') || '/';
+    if (req.method === 'GET' && requestPath === '/demo-orders/best-sellers') {
         try {
             return res.status(200).json({ rankings: getDemoBestSellers(req.app.db) });
         } catch (error) {
@@ -17,7 +18,7 @@ module.exports = (req, res, next) => {
             return res.status(500).json({ error: 'Demo-order rankings could not be loaded.' });
         }
     }
-    if (req.method === 'POST' && req.path === '/demo-orders') {
+    if (req.method === 'POST' && requestPath === '/demo-orders') {
         try {
             const result = createDemoOrder(req.app.db, req.body);
             return res.status(result.status).json({ order: result.order });
@@ -93,7 +94,7 @@ module.exports = (req, res, next) => {
     }
   }
     // if the request method is POST
-    if (req.method === 'POST') {
+    if (req.method === 'POST' && requestPath === '/products') {
         const requiredFields = ['title', 'price', 'description', 'thumbnail', 'categoryId', 'brand'];
         const missingFields = requiredFields.filter(field => {
             const value = req?.body?.[field];

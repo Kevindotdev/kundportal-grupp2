@@ -169,7 +169,7 @@ test('serves demo order creation and rankings through the mock API middleware', 
 
   const address = server.address();
   const baseUrl = `http://127.0.0.1:${address.port}`;
-  const createResponse = await fetch(`${baseUrl}/demo-orders`, {
+  const createResponse = await fetch(`${baseUrl}/demo-orders/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -192,4 +192,13 @@ test('serves demo order creation and rankings through the mock API middleware', 
   const savedState = JSON.parse(fs.readFileSync(databasePath, 'utf8'));
   assert.equal(savedState.products[0].stock, 1);
   assert.equal(savedState.demoOrders.length, 1);
+
+  const unrelatedPostResponse = await fetch(`${baseUrl}/unrelated`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({}),
+  });
+  const unrelatedPost = await unrelatedPostResponse.json();
+  assert.notEqual(unrelatedPostResponse.status, 400);
+  assert.doesNotMatch(JSON.stringify(unrelatedPost), /Missing required fields/);
 });
