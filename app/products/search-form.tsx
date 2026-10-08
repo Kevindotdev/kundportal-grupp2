@@ -55,6 +55,7 @@ export default function CatalogSearchForm({
     if (maximum) params.set('maxPrice', maximum);
     else params.delete('maxPrice');
 
+    params.delete('stock');
     if (formData.has('inStock')) params.set('inStock', 'true');
     else params.delete('inStock');
 

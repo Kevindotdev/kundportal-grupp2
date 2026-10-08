@@ -3,7 +3,7 @@ import { errorResponse } from '@/utils/error-response';
 import { normalizeCategories } from '@/utils/product-query';
 
 const API_URL = 'http://localhost:4000';
-const defaultLimit = '6';
+const defaultLimit = 6;
 
 type CatalogPriceStockFilters = {
   minPrice?: string;
@@ -46,12 +46,13 @@ export default class ProductService {
     stockParams: string,
     queryParams: string,
     filters: CatalogPriceStockFilters = {},
+    pageSize = defaultLimit,
   ): Promise<ApiResponse<ProductsResponse>> {
     try {
       const categories = normalizeCategories(categoryParams);
       const url = new URL('/products', API_URL);
       url.searchParams.set('_page', String(currentPage));
-      url.searchParams.set('_limit', defaultLimit);
+      url.searchParams.set('_limit', String(pageSize));
       url.searchParams.set('_sort', 'id');
       url.searchParams.set('_order', 'desc');
       url.searchParams.set('_expand', 'category');
@@ -59,13 +60,13 @@ export default class ProductService {
       if (queryParams) url.searchParams.set('q', queryParams);
       if (filters.minPrice !== undefined && filters.minPrice !== '') url.searchParams.set('price_gte', filters.minPrice);
       if (filters.maxPrice !== undefined && filters.maxPrice !== '') url.searchParams.set('price_lte', filters.maxPrice);
-      if (filters.inStock) url.searchParams.set('stock_gte', '1');
       if (stockParams === 'inStock') url.searchParams.set('stock_gte', '10');
-      if (stockParams === 'lowStock') {
+      else if (stockParams === 'lowStock') {
         url.searchParams.set('stock_gte', '1');
         url.searchParams.set('stock_lte', '10');
       }
-      if (stockParams === 'outofStock') url.searchParams.set('stock_lte', '0');
+      else if (stockParams === 'outofStock') url.searchParams.set('stock_lte', '0');
+      else if (filters.inStock) url.searchParams.set('stock_gte', '1');
 
       const response = await fetch(url, { method: 'GET' });
       if (!response.ok) throw new Error(`Products could not be loaded (HTTP ${response.status}).`);
