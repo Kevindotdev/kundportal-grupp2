@@ -11,6 +11,7 @@
   --primary: oklch(0.53 0.19 255);
   --primary-foreground: oklch(0.99 0.004 255);
   --success: oklch(0.48 0.14 150);
+  --success-hover: oklch(0.75 0.14 150);
   --error: oklch(0.53 0.19 25);
   --rating: oklch(0.769 0.188 70.08);
 }
@@ -26,6 +27,7 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-success: var(--success);
+  --color-success-hover: var(--success-hover);
   --color-error: var(--error);
   --color-rating: var(--rating);
   --font-sans: var(--font-geist-sans);
@@ -49,6 +51,7 @@ body {
     --primary: oklch(0.7 0.14 255);
     --primary-foreground: oklch(0.2 0.04 255);
     --success: oklch(0.75 0.14 150);
+    --success-hover: oklch(0.48 0.14 150);
     --error: oklch(0.72 0.16 25);
   }
 }

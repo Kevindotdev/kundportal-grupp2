@@ -28,7 +28,7 @@ export default function AddToCartButton({
         type="button"
         disabled={!isReady || Boolean(storageError) || disabled}
         onClick={addToCart}
-        className="min-h-11 w-full bg-success px-4 text-sm font-semibold text-background disabled:opacity-70"
+        className="min-h-11 w-full bg-success px-4 text-sm font-semibold text-background transition-colors duration-150 enabled:cursor-pointer enabled:hover:bg-success-hover enabled:active:bg-success disabled:opacity-70"
       >
         {disabled ? disabledLabel : 'Add to cart'}
       </button>
