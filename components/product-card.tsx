@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Star } from 'lucide-react';
 import AddToCartButton from '@/components/add-to-cart-button';
 import type { Product } from '@/app/types';
+import { discountedPrice } from '@/utils/product-price';
 
 export default function ProductCard({ product, eager = false }: { product: Product; eager?: boolean }) {
   return (
@@ -23,6 +24,11 @@ export default function ProductCard({ product, eager = false }: { product: Produ
           <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-xs font-medium text-foreground">
             {product.category?.name ?? 'Uncategorized'}
           </span>
+          {(product.discountPercentage ?? 0) > 0 && (
+            <span className="absolute bottom-3 right-3 whitespace-nowrap rounded-full bg-error px-2.5 py-1 text-[11px] font-semibold text-background sm:text-xs">
+              {product.discountPercentage}%
+            </span>
+          )}
           {product.rating !== undefined && (
             <span
               role="img"
@@ -38,7 +44,7 @@ export default function ProductCard({ product, eager = false }: { product: Produ
           <h2 className="line-clamp-2 min-h-12 flex-1 font-medium leading-6 transition-colors group-hover:text-primary group-hover:underline group-hover:decoration-primary group-hover:underline-offset-4">
             {product.title}
           </h2>
-          <p className="shrink-0 font-semibold">${product.price.toFixed(2)}</p>
+          <p className="shrink-0 font-semibold">${discountedPrice(product).toFixed(2)}</p>
         </div>
       </Link>
       <AddToCartButton
