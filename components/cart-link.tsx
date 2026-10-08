@@ -50,7 +50,7 @@ export default function CartLink() {
         aria-expanded={isOpen}
         aria-controls="shopping-cart-panel"
         onClick={() => setIsOpen(true)}
-        className="inline-flex size-11 items-center justify-center rounded-md hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        className="inline-flex size-11 items-center justify-center rounded-md hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer"
       >
         <ShoppingCart aria-hidden="true" size={20} />
         {isReady && itemCount > 0 && (
@@ -125,7 +125,7 @@ export default function CartLink() {
               <Link
                 href="/checkout"
                 onClick={() => setIsOpen(false)}
-                className="flex min-h-11 items-center justify-center bg-primary px-5 font-semibold text-primary-foreground hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="flex min-h-11 items-center justify-center bg-success px-5 font-semibold text-background transition hover:brightness-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
               >
                 Go to checkout
               </Link>
