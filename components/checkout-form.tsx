@@ -367,7 +367,11 @@ export default function CheckoutForm() {
                 className="min-h-11 border border-border px-3"
               />
             </label>
-            <button type="submit" disabled={isSubmitting} className="min-h-11 bg-primary px-5 font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="min-h-11 cursor-pointer rounded-md bg-primary px-5 font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60"
+            >
               {isSubmitting ? 'Placing demo order…' : 'Place demo order'}
             </button>
           </form>
