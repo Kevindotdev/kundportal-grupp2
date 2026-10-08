@@ -55,6 +55,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
   const outOfStock = product.stock !== undefined && product.stock <= 0;
   const statusIsOutOfStock = product.availabilityStatus?.toLowerCase() === 'out of stock';
   const purchaseDisabled = outOfStock || statusIsOutOfStock;
+  const discountPercentage = product.discountPercentage;
+  const hasDiscount = discountPercentage !== undefined && discountPercentage > 0;
   const stockLabel = product.stock === undefined
     ? product.availabilityStatus ?? 'Availability unknown'
     : product.stock <= 0
@@ -82,7 +84,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
       </Link>
 
       <div className="mt-6 grid gap-8 lg:grid-cols-2 lg:gap-12">
-        <ProductGallery title={product.title} images={product.images} thumbnail={product.thumbnail} />
+        <ProductGallery title={product.title} images={product.images} />
 
         <article>
           {product.category && <p className="text-sm text-muted-foreground">{product.category.name}</p>}
@@ -94,16 +96,16 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
             </p>
           )}
 
-          {product.discountPercentage !== undefined ? (
+          {hasDiscount ? (
             <div className="mt-5 flex items-baseline gap-2">
               <p className="text-2xl font-semibold text-muted-foreground line-through">${product.price.toFixed(2)}</p>
-              <p className="text-3xl font-bold text-primary">${(product.price * (1 - product.discountPercentage / 100)).toFixed(2)}</p>
+              <p className="text-3xl font-bold">${(product.price * (1 - discountPercentage / 100)).toFixed(2)}</p>
             </div>
           ) : (
             <p className="mt-5 text-2xl font-semibold">${product.price.toFixed(2)}</p>
           )}
-          {product.discountPercentage !== undefined && (
-            <p className="mt-1 text-sm text-muted-foreground">Discount: {product.discountPercentage}%</p>
+          {hasDiscount && (
+            <p className="mt-1 text-sm text-muted-foreground">Discount: {discountPercentage}%</p>
           )}
           <p className="mt-4 text-sm" aria-live="polite">Availability: {stockLabel}</p>
           <p className="mt-5 leading-7">{product.description}</p>

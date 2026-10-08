@@ -8,12 +8,11 @@
   --muted: oklch(0.95 0.008 255);
   --muted-foreground: oklch(0.48 0.018 255);
   --border: oklch(0.88 0.012 255);
-  --primary: oklch(0.4 0.19 150);
+  --primary: oklch(0.53 0.19 255);
   --primary-foreground: oklch(0.99 0.004 255);
   --success: oklch(0.48 0.14 150);
   --error: oklch(0.53 0.19 25);
   --rating: oklch(0.769 0.188 70.08);
-  --primary-hover: oklch(0.3 0.19 150);
 }
 
 @theme inline {
@@ -38,31 +37,6 @@ body {
   font-family: var(--font-inter), Helvetica, sans-serif;
 }
 
-button[data-clicked='true']:not(:disabled) {
-  background-color: oklch(0.82 0.15 160);
-  color: oklch(0.18 0.05 160);
-}
-
-button:not(:disabled):hover {
-  background-color: oklch(0.35 0.16 150);
-  color: oklch(0.99 0.004 255);
-}
-
-button:not(:disabled):active,
-button[data-clicked='true']:not(:disabled):active {
-  background-color: oklch(0.82 0.15 160);
-  color: oklch(0.18 0.05 160);
-}
-
-button.thumbnail-choice:not(:disabled),
-button.thumbnail-choice:not(:disabled):hover,
-button.thumbnail-choice:not(:disabled):active,
-button.thumbnail-choice[data-clicked='true']:not(:disabled),
-button.thumbnail-choice[data-clicked='true']:not(:disabled):active {
-  background-color: var(--surface);
-  color: inherit;
-}
-
 @media (prefers-color-scheme: dark) {
   .storefront {
     --background: oklch(0.17 0.012 255);
@@ -72,10 +46,9 @@ button.thumbnail-choice[data-clicked='true']:not(:disabled):active {
     --muted: oklch(0.27 0.014 255);
     --muted-foreground: oklch(0.72 0.014 255);
     --border: oklch(0.36 0.014 255);
-    --primary: oklch(0.6 0.14 150);
+    --primary: oklch(0.7 0.14 255);
     --primary-foreground: oklch(0.2 0.04 255);
     --success: oklch(0.75 0.14 150);
     --error: oklch(0.72 0.16 25);
-    --primary-hover: oklch(0.5 0.14 150);
   }
 }

@@ -6,13 +6,11 @@ import Image from 'next/image';
 export default function ProductGallery({
   title,
   images,
-  thumbnail,
 }: {
   title: string;
   images: string[];
-  thumbnail: string;
 }) {
-  const galleryImages = Array.from(new Set([thumbnail, ...images].filter(Boolean)));
+  const galleryImages = Array.from(new Set(images.filter(Boolean)));
   const [selectedImage, setSelectedImage] = useState(galleryImages[0] ?? null);
   const selectedIndex = selectedImage ? galleryImages.indexOf(selectedImage) : -1;
 
