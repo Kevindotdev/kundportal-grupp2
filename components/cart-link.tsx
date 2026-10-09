@@ -7,7 +7,7 @@ import { ShoppingCart, X } from 'lucide-react';
 import { useCart } from '@/components/cart-provider';
 
 export default function CartLink() {
-  const { items, isReady, storageError } = useCart();
+  const { items, isReady, storageError, setQuantity, removeItem } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -100,6 +100,13 @@ export default function CartLink() {
               <p role="status">Loading your cart…</p>
             ) : storageError ? (
               <p role="alert" className="text-destructive">{storageError}</p>
+            ) : items.length === 0 ? (
+              <div className="space-y-4">
+                <p>Your cart is empty.</p>
+                <Link href="/products" onClick={() => setIsOpen(false)} className="inline-flex min-h-11 items-center underline underline-offset-4">
+                  Browse products
+                </Link>
+              </div>
             ) : (
               <ul className="divide-y divide-border">
                 {items.map((item) => (
@@ -112,7 +119,34 @@ export default function CartLink() {
                           Sale · {item.discountPercentage}% off
                         </span>
                       )}
-                      <p className="text-sm text-muted-foreground">${item.price.toFixed(2)} each · Qty {item.quantity}</p>
+                      <p className="text-sm text-muted-foreground">${item.price.toFixed(2)} each</p>
+                      <div className="mt-2 flex items-center gap-2">
+                        <button
+                          type="button"
+                          aria-label={`Decrease ${item.title} quantity`}
+                          disabled={item.quantity === 1}
+                          onClick={() => setQuantity(item.id, item.quantity - 1)}
+                          className="inline-flex size-11 items-center justify-center border border-border disabled:opacity-50"
+                        >
+                          −
+                        </button>
+                        <span aria-live="polite" aria-label={`Quantity ${item.quantity}`}>{item.quantity}</span>
+                        <button
+                          type="button"
+                          aria-label={`Increase ${item.title} quantity`}
+                          onClick={() => setQuantity(item.id, item.quantity + 1)}
+                          className="inline-flex size-11 items-center justify-center border border-border"
+                        >
+                          +
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => removeItem(item.id)}
+                          className="min-h-11 px-2 text-sm underline underline-offset-4"
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </div>
                     <p className="shrink-0 font-medium">${(item.price * item.quantity).toFixed(2)}</p>
                   </li>
