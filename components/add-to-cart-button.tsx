@@ -7,6 +7,9 @@ import { discountedPrice } from '@/utils/product-price';
 
 export default function AddToCartButton({
   product,
+  disabled = false,
+  disabledLabel = 'Out of stock',
+  className = 'mx-4 mb-4',
 }: {
   product: Pick<Product, 'id' | 'title' | 'price' | 'discountPercentage' | 'thumbnail'>;
 }) {
@@ -19,14 +22,14 @@ export default function AddToCartButton({
   }
 
   return (
-    <div className="mx-4 mb-4">
+    <div className={className}>
       <button
         type="button"
-        disabled={!isReady || Boolean(storageError)}
+        disabled={!isReady || Boolean(storageError) || disabled}
         onClick={addToCart}
-        className="min-h-11 w-full bg-success px-4 text-sm font-semibold text-background disabled:opacity-70"
+        className="min-h-11 w-full bg-success px-4 text-sm font-semibold text-background transition-colors duration-150 enabled:cursor-pointer enabled:hover:bg-success-hover enabled:active:bg-success disabled:opacity-70"
       >
-        Add to cart
+        {disabled ? disabledLabel : 'Add to cart'}
       </button>
       {storageError && <p role="alert" className="mt-2 text-sm text-destructive">{storageError}</p>}
       <p className="sr-only" aria-live="polite">{message}</p>

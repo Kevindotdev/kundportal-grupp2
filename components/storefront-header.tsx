@@ -8,12 +8,7 @@ import ProductService from '@/services/product-service';
 export default async function StorefrontHeader() {
   await connection();
   const response = await ProductService.getAllProducts();
-
-  if (!response.success) {
-    throw new Error(`Could not load products for the storefront search: ${response.message}`);
-  }
-
-  const searchableProducts: ProductSearchItem[] = response.data.products.map(
+  const searchableProducts: ProductSearchItem[] = response.success ? response.data.products.map(
     ({ id, title, tags, sku, brand, category, thumbnail, price, discountPercentage }) => ({
       id,
       title,
@@ -25,7 +20,7 @@ export default async function StorefrontHeader() {
       price,
       discountPercentage,
     }),
-  );
+  ) : [];
 
   return (
     <header className="border-b border-border bg-surface text-surface-foreground">
