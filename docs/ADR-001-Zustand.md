@@ -15,17 +15,17 @@ För att uppfylla PRD (FR-5) skapar vi en kodbas-intern global state för kundva
 
 ## 2. Övervägda Alternativ
 
-### Alternativ A: [t.ex. React Context API med LocalStorage]
+### Alternativ A: React Context API med LocalStorage
 
 - **Fördelar:** Inbyggt i React, inga externa beroenden, enkelt att komma igång med.
 - **Nackdelar:** Kan orsaka onödiga omrenderingar vid frekventa uppdateringar, kräver manuell hantering av SSR/hydration mismatch vid synk mot LocalStorage.
 
-### Alternativ B: [t.ex. Zustand med persist-middleware]
+### Alternativ B: Zustand med persist-middleware
 
 - **Fördelar:** Lättviktigt (under 2kB), mycket snabbt, friktionsfri selector-modell som minimerar omrenderingar, inbyggt stöd för att persistera till LocalStorage eller Cookies.
 - **Nackdelar:** Ett extra npm-paket att underhålla och lära sig.
 
-### Alternativ C: [t.ex. Server State med Cookies och Server Actions]
+### Alternativ C: Server State med Cookies och Server Actions
 
 - **Fördelar:** Fungerar sömlöst med Server Components och kräver minimal JavaScript på klienten.
 - **Nackdelar:** Mer komplext att implementera för snabba UI-uppdateringar utan fördröjning om inte optimistiska uppdateringar används.
