@@ -126,7 +126,7 @@ export default function CartLink() {
                           aria-label={`Decrease ${item.title} quantity`}
                           disabled={item.quantity === 1}
                           onClick={() => setQuantity(item.id, item.quantity - 1)}
-                          className="inline-flex size-11 items-center justify-center border border-border disabled:opacity-50"
+                          className="inline-flex size-11 cursor-pointer items-center justify-center border border-border disabled:opacity-50"
                         >
                           −
                         </button>
@@ -135,7 +135,7 @@ export default function CartLink() {
                           type="button"
                           aria-label={`Increase ${item.title} quantity`}
                           onClick={() => setQuantity(item.id, item.quantity + 1)}
-                          className="inline-flex size-11 items-center justify-center border border-border"
+                          className="inline-flex size-11 cursor-pointer items-center justify-center border border-border"
                         >
                           +
                         </button>
@@ -143,7 +143,7 @@ export default function CartLink() {
                           type="button"
                           aria-label={`Remove ${item.title} from cart`}
                           onClick={() => removeItem(item.id)}
-                          className="min-h-11 px-2 text-sm underline underline-offset-4"
+                          className="min-h-11 cursor-pointer px-2 text-sm underline underline-offset-4"
                         >
                           Remove
                         </button>
