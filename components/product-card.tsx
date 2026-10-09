@@ -48,12 +48,15 @@ export default function ProductCard({ product, eager = false }: { product: Produ
         </div>
       </Link>
       <AddToCartButton
+        disabled={(product.stock !== undefined && product.stock <= 0) || product.availabilityStatus?.toLowerCase() === 'out of stock'}
         product={{
           id: product.id,
           title: product.title,
           price: product.price,
           discountPercentage: product.discountPercentage,
           thumbnail: product.thumbnail,
+          stock: product.stock,
+          availabilityStatus: product.availabilityStatus,
         }}
       />
     </article>
