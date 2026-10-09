@@ -12,6 +12,9 @@ export default function AddToCartButton({
   className = 'mx-4 mb-4',
 }: {
   product: Pick<Product, 'id' | 'title' | 'price' | 'discountPercentage' | 'thumbnail'>;
+  disabled?: boolean;
+  disabledLabel?: string;
+  className?: string;
 }) {
   const { addItem, isReady, storageError } = useCart();
   const [message, setMessage] = useState('');
