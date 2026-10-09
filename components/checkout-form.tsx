@@ -2,9 +2,10 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { useCart } from '@/components/cart-provider';
 import type { CartItem } from '@/lib/cart';
+import DemoOrderService, { type DemoOrder } from '@/services/demo-order-service';
 
 type DeliveryDetails = {
   firstName: string;
@@ -27,6 +28,8 @@ const initialDeliveryDetails: DeliveryDetails = {
   city: '',
   country: '',
 };
+
+const DEMO_ORDER_ATTEMPT_STORAGE_KEY = 'webshop-demo-order-attempt';
 
 function orderTotal(items: CartItem[]) {
   return items.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -67,10 +70,16 @@ export default function CheckoutForm() {
   const { items, isReady, storageError, setQuantity, removeItem, clearCart } = useCart();
   const [details, setDetails] = useState(initialDeliveryDetails);
   const [validationMessage, setValidationMessage] = useState('');
-  const [order, setOrder] = useState<CartItem[] | null>(null);
+  const [order, setOrder] = useState<DemoOrder | null>(null);
+  const [cartClearWarning, setCartClearWarning] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const idempotencyKey = useRef<string | null>(null);
+  const attemptFingerprint = useRef<string | null>(null);
+  const submissionInProgress = useRef(false);
 
-  function submitOrder(event: FormEvent<HTMLFormElement>) {
+  async function submitOrder(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submissionInProgress.current) return;
     setValidationMessage('');
 
     if (items.length === 0) {
@@ -101,33 +110,97 @@ export default function CheckoutForm() {
       return;
     }
 
-    const confirmedItems = items.map((item) => ({ ...item }));
-    if (!clearCart()) {
-      setValidationMessage('Your order could not be completed because the saved cart could not be cleared.');
+    const fingerprint = JSON.stringify(
+      items
+        .map(({ id, quantity }) => ({ id, quantity }))
+        .sort((a, b) => a.id - b.id)
+    );
+    if (!idempotencyKey.current || attemptFingerprint.current !== fingerprint) {
+      try {
+        const savedAttempt = window.sessionStorage.getItem(DEMO_ORDER_ATTEMPT_STORAGE_KEY);
+        const parsedAttempt: unknown = savedAttempt ? JSON.parse(savedAttempt) : null;
+        const reusableKey =
+          typeof parsedAttempt === 'object' &&
+          parsedAttempt !== null &&
+          'fingerprint' in parsedAttempt &&
+          parsedAttempt.fingerprint === fingerprint &&
+          'idempotencyKey' in parsedAttempt &&
+          typeof parsedAttempt.idempotencyKey === 'string'
+            ? parsedAttempt.idempotencyKey
+            : null;
+        idempotencyKey.current = reusableKey ?? crypto.randomUUID();
+        attemptFingerprint.current = fingerprint;
+        window.sessionStorage.setItem(
+          DEMO_ORDER_ATTEMPT_STORAGE_KEY,
+          JSON.stringify({ fingerprint, idempotencyKey: idempotencyKey.current })
+        );
+      } catch {
+        submissionInProgress.current = false;
+        setIsSubmitting(false);
+        setValidationMessage('Your order could not be safely prepared for retry. Please check your browser storage settings.');
+        return;
+      }
+    }
+
+    submissionInProgress.current = true;
+    setIsSubmitting(true);
+    const result = await DemoOrderService.placeOrder(idempotencyKey.current, items);
+    submissionInProgress.current = false;
+    setIsSubmitting(false);
+
+    if (!result.success) {
+      setValidationMessage(result.message);
+      if (result.status !== undefined && result.status < 500) {
+        idempotencyKey.current = null;
+        attemptFingerprint.current = null;
+      }
       return;
     }
-    setOrder(confirmedItems);
+
+    setOrder(result.order);
+    idempotencyKey.current = null;
+    attemptFingerprint.current = null;
+    let warning = '';
+    try {
+      window.sessionStorage.removeItem(DEMO_ORDER_ATTEMPT_STORAGE_KEY);
+    } catch {
+      warning = 'Your order was saved, but retry protection could not be cleared from this browser.';
+    }
+    if (!clearCart()) {
+      warning = [warning, 'Your order was saved, but the cart could not be cleared from this browser.']
+        .filter(Boolean)
+        .join(' ');
+    }
+    setCartClearWarning(warning);
   }
 
   if (!isReady) return <p role="status" className="mt-6">Loading your cart…</p>;
-
-  if (storageError) {
-    return <p role="alert" className="mt-6 text-destructive">{storageError}</p>;
-  }
 
   if (order) {
     return (
       <div className="mt-6 space-y-6">
         <div role="status" className="border border-success p-5">
           <h2 className="text-xl font-semibold">Order confirmed</h2>
-          <p className="mt-2">This demo order is confirmed. No payment was collected or order saved to a server.</p>
+          <p className="mt-2">Your demo order was saved. No payment was collected.</p>
+          <p className="mt-1 text-sm">Order reference: {order.id}</p>
         </div>
-        <OrderSummary items={order} />
+        {cartClearWarning && <p role="alert" className="text-destructive">{cartClearWarning}</p>}
+        <OrderSummary items={order.items.map((item) => ({
+          id: item.productId,
+          title: item.title,
+          price: item.price,
+          thumbnail: item.thumbnail,
+          quantity: item.quantity,
+        }))} />
         <Link href="/products" className="inline-flex min-h-11 items-center underline underline-offset-4">
           Continue shopping
         </Link>
       </div>
     );
+  }
+
+  if (storageError) {
+    return <p role="alert" className="mt-6 text-destructive">{storageError}</p>;
   }
 
   if (items.length === 0) {
@@ -294,8 +367,12 @@ export default function CheckoutForm() {
                 className="min-h-11 border border-border px-3"
               />
             </label>
-            <button type="submit" className="min-h-11 bg-primary px-5 font-semibold text-primary-foreground">
-              Place demo order
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="min-h-11 cursor-pointer rounded-md bg-primary px-5 font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSubmitting ? 'Placing demo order…' : 'Place demo order'}
             </button>
           </form>
         </section>
