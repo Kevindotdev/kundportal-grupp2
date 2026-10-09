@@ -115,6 +115,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               id: product.id,
               title: product.title,
               price: product.price,
+              discountPercentage: product.discountPercentage,
               thumbnail: product.thumbnail,
             }}
             disabled={purchaseDisabled}
