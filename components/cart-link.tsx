@@ -130,7 +130,7 @@ export default function CartLink() {
                         >
                           −
                         </button>
-                        <span aria-live="polite">Quantity {item.quantity}</span>
+                        <span aria-live="polite">{item.quantity}</span>
                         <button
                           type="button"
                           aria-label={`Increase ${item.title} quantity`}
