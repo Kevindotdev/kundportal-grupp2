@@ -130,7 +130,7 @@ export default function CartLink() {
                         >
                           −
                         </button>
-                        <span aria-live="polite" aria-label={`Quantity ${item.quantity}`}>{item.quantity}</span>
+                        <span aria-live="polite">Quantity {item.quantity}</span>
                         <button
                           type="button"
                           aria-label={`Increase ${item.title} quantity`}
@@ -141,6 +141,7 @@ export default function CartLink() {
                         </button>
                         <button
                           type="button"
+                          aria-label={`Remove ${item.title} from cart`}
                           onClick={() => removeItem(item.id)}
                           className="min-h-11 px-2 text-sm underline underline-offset-4"
                         >
