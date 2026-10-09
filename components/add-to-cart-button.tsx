@@ -45,7 +45,7 @@ export default function AddToCartButton({
         type="button"
         disabled={!isReady || Boolean(storageError) || disabled || reachedStockLimit}
         onClick={addToCart}
-        className="min-h-11 w-full bg-success px-4 text-sm font-semibold text-background transition-colors duration-150 enabled:cursor-pointer enabled:hover:bg-success-hover enabled:active:bg-success disabled:opacity-70 disabled:cursor-not-allowed"
+        className="min-h-11 w-full bg-success px-4 text-sm font-semibold text-background transition enabled:cursor-pointer enabled:hover:brightness-75 enabled:active:bg-success enabled:active:brightness-100 disabled:opacity-70 disabled:cursor-not-allowed"
       >
         {disabled ? disabledLabel : reachedStockLimit ? cartStockMessage('stock-limit', stock) : 'Add to cart'}
       </button>
