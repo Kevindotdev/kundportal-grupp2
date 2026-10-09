@@ -4,6 +4,7 @@ export type CartItem = {
   id: number;
   title: string;
   price: number;
+  discountPercentage?: number;
   thumbnail: string;
   quantity: number;
 };
@@ -29,6 +30,12 @@ export function parseCart(value: string): CartItem[] {
       typeof item.price !== 'number' ||
       !Number.isFinite(item.price) ||
       item.price < 0 ||
+      ('discountPercentage' in item && (
+        typeof item.discountPercentage !== 'number' ||
+        !Number.isFinite(item.discountPercentage) ||
+        item.discountPercentage < 0 ||
+        item.discountPercentage > 100
+      )) ||
       typeof item.thumbnail !== 'string' ||
       typeof item.quantity !== 'number' ||
       !Number.isSafeInteger(item.quantity) ||
@@ -41,6 +48,7 @@ export function parseCart(value: string): CartItem[] {
       id: item.id,
       title: item.title,
       price: item.price,
+      ...('discountPercentage' in item ? { discountPercentage: item.discountPercentage as number } : {}),
       thumbnail: item.thumbnail,
       quantity: item.quantity,
     };
