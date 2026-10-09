@@ -5,15 +5,23 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { ShoppingCart, X } from 'lucide-react';
 import { useCart } from '@/components/cart-provider';
+import { cartStockMessage, isCartStockError } from '@/lib/cart-stock';
 
 export default function CartLink() {
   const { items, isReady, storageError, setQuantity, removeItem } = useCart();
   const [isOpen, setIsOpen] = useState(false);
+  const [stockMessage, setStockMessage] = useState<{ id: number; text: string } | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  function changeQuantity(item: (typeof items)[number], quantity: number) {
+    const result = setQuantity(item.id, quantity);
+    const isStockError = isCartStockError(result);
+    setStockMessage(isStockError ? { id: item.id, text: cartStockMessage(result, item.stock) } : null);
+  }
 
   useEffect(() => {
     if (!isOpen) return;
@@ -111,7 +119,7 @@ export default function CartLink() {
               <ul className="divide-y divide-border">
                 {items.map((item) => (
                   <li key={item.id} className="flex items-center gap-4 py-4">
-                    <div className="group flex min-w-0 flex-1 items-center gap-4">
+                    <div className="group flex min-w-0 flex-1 items-start gap-4">
                       <Link
                         href={`/products/${item.id}`}
                         onClick={() => setIsOpen(false)}
@@ -132,13 +140,17 @@ export default function CartLink() {
                             Sale · {item.discountPercentage}% off
                           </span>
                         )}
+                      {item.stock === 0 && <p role="alert" className="mt-1 text-sm text-destructive">{cartStockMessage('out-of-stock')}</p>}
                         <p className="text-sm text-muted-foreground">${item.price.toFixed(2)} each</p>
                         <div className="mt-2 flex items-center gap-2">
                           <button
                             type="button"
                             aria-label={`Decrease ${item.title} quantity`}
-                            disabled={item.quantity === 1}
-                            onClick={() => setQuantity(item.id, item.quantity - 1)}
+                            disabled={item.quantity === 1 || item.stock === 0}
+                            onClick={() => changeQuantity(
+                              item,
+                              item.stock !== undefined && item.quantity > item.stock ? item.stock : item.quantity - 1,
+                            )}
                             className="inline-flex size-11 cursor-pointer items-center justify-center border border-border disabled:opacity-50"
                           >
                             −
@@ -147,23 +159,32 @@ export default function CartLink() {
                           <button
                             type="button"
                             aria-label={`Increase ${item.title} quantity`}
-                            onClick={() => setQuantity(item.id, item.quantity + 1)}
-                            className="inline-flex size-11 cursor-pointer items-center justify-center border border-border"
+                            disabled={item.stock === 0 || (item.stock !== undefined && item.quantity >= item.stock)}
+                            onClick={() => changeQuantity(item, item.quantity + 1)}
+                            className="inline-flex size-11 cursor-pointer items-center justify-center border border-border disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             +
                           </button>
                           <button
                             type="button"
                             aria-label={`Remove ${item.title} from cart`}
-                            onClick={() => removeItem(item.id)}
+                            onClick={() => {
+                              removeItem(item.id);
+                              setStockMessage(null);
+                            }}
                             className="min-h-11 cursor-pointer px-2 text-sm underline underline-offset-4"
                           >
                             Remove
                           </button>
                         </div>
+                        {stockMessage?.id === item.id ? (
+                          <p role="alert" className="mt-2 text-sm text-destructive">{stockMessage.text}</p>
+                        ) : item.stock !== undefined && item.stock > 0 && item.quantity >= item.stock ? (
+                          <p role="status" className="mt-2 text-sm text-destructive">{cartStockMessage('stock-limit', item.stock)}</p>
+                        ) : null}
                       </div>
                     </div>
-                    <p className="shrink-0 font-medium">${(item.price * item.quantity).toFixed(2)}</p>
+                    <p className="shrink-0 self-start font-medium">${(item.price * item.quantity).toFixed(2)}</p>
                   </li>
                 ))}
               </ul>
