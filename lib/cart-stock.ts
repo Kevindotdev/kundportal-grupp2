@@ -15,5 +15,5 @@ export function checkCartStock(stock: number | undefined, quantity: number, curr
 export function cartStockMessage(error: CartStockError, stock?: number): string {
   if (error === 'out-of-stock') return 'Out of stock.';
   if (error === 'stock-unavailable') return 'Stock information is unavailable.';
-  return stock === undefined ? 'Maximum stock limit reached.' : `Maximum available: ${stock}.`;
+  return stock === undefined ? 'Maximum stock limit reached.' : `Maximum available: ${stock}`;
 }
