@@ -5,15 +5,23 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { ShoppingCart, X } from 'lucide-react';
 import { useCart } from '@/components/cart-provider';
+import { cartStockMessage, isCartStockError } from '@/lib/cart-stock';
 
 export default function CartLink() {
-  const { items, isReady, storageError } = useCart();
+  const { items, isReady, storageError, setQuantity, removeItem } = useCart();
   const [isOpen, setIsOpen] = useState(false);
+  const [stockMessage, setStockMessage] = useState<{ id: number; text: string } | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLElement>(null);
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  function changeQuantity(item: (typeof items)[number], quantity: number) {
+    const result = setQuantity(item.id, quantity);
+    const isStockError = isCartStockError(result);
+    setStockMessage(isStockError ? { id: item.id, text: cartStockMessage(result, item.stock) } : null);
+  }
 
   useEffect(() => {
     if (!isOpen) return;
@@ -100,21 +108,83 @@ export default function CartLink() {
               <p role="status">Loading your cart…</p>
             ) : storageError ? (
               <p role="alert" className="text-destructive">{storageError}</p>
+            ) : items.length === 0 ? (
+              <div className="space-y-4">
+                <p>Your cart is empty.</p>
+                <Link href="/products" onClick={() => setIsOpen(false)} className="inline-flex min-h-11 items-center underline underline-offset-4">
+                  Browse products
+                </Link>
+              </div>
             ) : (
               <ul className="divide-y divide-border">
                 {items.map((item) => (
                   <li key={item.id} className="flex items-center gap-4 py-4">
-                    <Image src={item.thumbnail} alt="" width={64} height={64} className="size-16 object-contain" />
-                    <div className="min-w-0 flex-1">
-                      <p className="font-medium">{item.title}</p>
-                      {(item.discountPercentage ?? 0) > 0 && (
-                        <span className="mt-1 inline-block rounded-full bg-error px-2 py-0.5 text-xs font-semibold text-background">
-                          Sale · {item.discountPercentage}% off
-                        </span>
-                      )}
-                      <p className="text-sm text-muted-foreground">${item.price.toFixed(2)} each · Qty {item.quantity}</p>
+                    <div className="group flex min-w-0 flex-1 items-start gap-4">
+                      <Link
+                        href={`/products/${item.id}`}
+                        onClick={() => setIsOpen(false)}
+                        className="shrink-0 rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                      >
+                        <Image src={item.thumbnail} alt={item.title} width={64} height={64} className="size-16 object-contain" />
+                      </Link>
+                      <div className="min-w-0 flex-1">
+                        <Link
+                          href={`/products/${item.id}`}
+                          onClick={() => setIsOpen(false)}
+                          className="block font-medium underline-offset-4 hover:underline group-hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                        >
+                          {item.title}
+                        </Link>
+                        {(item.discountPercentage ?? 0) > 0 && (
+                          <span className="mt-1 inline-block rounded-full bg-error px-2 py-0.5 text-xs font-semibold text-background">
+                            Sale · {item.discountPercentage}% off
+                          </span>
+                        )}
+                      {item.stock === 0 && <p role="alert" className="mt-1 text-sm text-destructive">{cartStockMessage('out-of-stock')}</p>}
+                        <p className="text-sm text-muted-foreground">${item.price.toFixed(2)} each</p>
+                        <div className="mt-2 flex items-center gap-2">
+                          <button
+                            type="button"
+                            aria-label={`Decrease ${item.title} quantity`}
+                            disabled={item.quantity === 1 || item.stock === 0}
+                            onClick={() => changeQuantity(
+                              item,
+                              item.stock !== undefined && item.quantity > item.stock ? item.stock : item.quantity - 1,
+                            )}
+                            className="inline-flex size-11 cursor-pointer items-center justify-center border border-border disabled:opacity-50"
+                          >
+                            −
+                          </button>
+                          <span aria-live="polite">{item.quantity}</span>
+                          <button
+                            type="button"
+                            aria-label={`Increase ${item.title} quantity`}
+                            disabled={item.stock === 0 || (item.stock !== undefined && item.quantity >= item.stock)}
+                            onClick={() => changeQuantity(item, item.quantity + 1)}
+                            className="inline-flex size-11 cursor-pointer items-center justify-center border border-border disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            +
+                          </button>
+                          <button
+                            type="button"
+                            aria-label={`Remove ${item.title} from cart`}
+                            onClick={() => {
+                              removeItem(item.id);
+                              setStockMessage(null);
+                            }}
+                            className="min-h-11 cursor-pointer px-2 text-sm underline underline-offset-4"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                        {stockMessage?.id === item.id ? (
+                          <p role="alert" className="mt-2 text-sm text-destructive">{stockMessage.text}</p>
+                        ) : item.stock !== undefined && item.stock > 0 && item.quantity >= item.stock ? (
+                          <p role="status" className="mt-2 text-sm text-destructive">{cartStockMessage('stock-limit', item.stock)}</p>
+                        ) : null}
+                      </div>
                     </div>
-                    <p className="shrink-0 font-medium">${(item.price * item.quantity).toFixed(2)}</p>
+                    <p className="shrink-0 self-start font-medium">${(item.price * item.quantity).toFixed(2)}</p>
                   </li>
                 ))}
               </ul>

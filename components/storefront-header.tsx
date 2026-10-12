@@ -34,7 +34,7 @@ export default async function StorefrontHeader() {
           </Link>
           <ProductSearch products={searchableProducts} />
 
-          <div className="order-2 flex items-center gap-2 md:order-3">
+          <div className="order-2 ml-auto flex items-center gap-2 md:order-3 md:ml-0">
             <CartLink />
             <Link
               href="/admin"

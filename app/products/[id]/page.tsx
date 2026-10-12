@@ -115,7 +115,10 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               id: product.id,
               title: product.title,
               price: product.price,
+              discountPercentage: product.discountPercentage,
               thumbnail: product.thumbnail,
+              stock: product.stock,
+              availabilityStatus: product.availabilityStatus,
             }}
             disabled={purchaseDisabled}
             className="mt-6"

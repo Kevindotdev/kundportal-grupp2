@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { CART_STORAGE_KEY, parseCart, type CartItem } from '@/lib/cart';
+import { checkCartStock, type CartStockError } from '@/lib/cart-stock';
 
 let persistenceError = false;
 
@@ -10,11 +11,13 @@ type CartState = {
   storageError: string | null;
   setReady: () => void;
   setStorageError: (message: string) => void;
-  addItem: (item: Omit<CartItem, 'quantity'>) => boolean;
-  setQuantity: (id: number, quantity: number) => boolean;
+  addItem: (item: Omit<CartItem, 'quantity'>) => CartActionResult;
+  setQuantity: (id: number, quantity: number) => CartActionResult;
   removeItem: (id: number) => boolean;
   clearCart: () => boolean;
 };
+
+type CartActionResult = 'success' | CartStockError | 'failed';
 
 export const useCartStore = create<CartState>()(
   persist(
@@ -42,18 +45,34 @@ export const useCartStore = create<CartState>()(
         },
         addItem: (item) => {
           const { items, isReady, storageError } = get();
-          if (!isReady || storageError) return false;
+          if (!isReady || storageError) return 'failed';
           const existing = items.find((cartItem) => cartItem.id === item.id);
-          return saveItems(existing
+          const stock = item.stock ?? existing?.stock;
+          const currentQuantity = existing?.quantity ?? 0;
+          const stockError = checkCartStock(stock, currentQuantity + 1, currentQuantity);
+          if (stockError) {
+            if (existing && item.stock !== undefined && Number.isSafeInteger(item.stock) && item.stock >= 0 && item.stock !== existing.stock) {
+              const updatedItems = items.map((cartItem) => (
+                cartItem.id === item.id ? { ...cartItem, stock: item.stock } : cartItem
+              ));
+              if (!saveItems(updatedItems)) return 'failed';
+            }
+            return stockError;
+          }
+          const nextItems = existing
             ? items.map((cartItem) => (
-                cartItem.id === item.id ? { ...cartItem, ...item, quantity: cartItem.quantity + 1 } : cartItem
+                cartItem.id === item.id ? { ...cartItem, ...item, stock, quantity: cartItem.quantity + 1 } : cartItem
               ))
-            : [...items, { ...item, quantity: 1 }]);
+            : [...items, { ...item, stock, quantity: 1 }];
+          return saveItems(nextItems) ? 'success' : 'failed';
         },
         setQuantity: (id, quantity) => {
           const { isReady, items, storageError } = get();
-          if (!isReady || !Number.isSafeInteger(quantity) || quantity < 1 || storageError) return false;
-          return saveItems(items.map((item) => (item.id === id ? { ...item, quantity } : item)));
+          const cartItem = items.find((item) => item.id === id);
+          if (!isReady || !Number.isSafeInteger(quantity) || quantity < 1 || storageError || !cartItem) return 'failed';
+          const stockError = checkCartStock(cartItem.stock, quantity, cartItem.quantity);
+          if (stockError) return stockError;
+          return saveItems(items.map((item) => (item.id === id ? { ...item, quantity } : item))) ? 'success' : 'failed';
         },
         removeItem: (id) => {
           const { isReady, items, storageError } = get();
