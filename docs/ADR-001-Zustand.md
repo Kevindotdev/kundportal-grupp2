@@ -44,6 +44,7 @@ Lösningen erbjuder en flexibel och global tillståndshantering för våra Clien
 
 ### Positiva konsekvenser
 
+- Enbart de komponenter som berörs av ändringar i en specifik del av en State behöver renderas om (Selectors), till skillnad från Context där varje komponent som prenumererar (subscribe) på den den Contexten omrenderas, vilket kan innebära sämre prestanda.
 - Minimalt med Boilerplate-kod: Till skillnad från äldre lösningar för persistens (som Redux Persist) krävs bara några få rader kod för att lägga till persistens i en Zustand-store – det räcker med att omsluta din store med `persist`.
 - Automatisk återställning av tillstånd (rehydrering): När applikationen startar hämtar middleware-komponenten automatiskt den sparade datan till din store (återställning) – sömlöst och i bakgrunden.
 - Flexibla lagringsmotorer: Stöder både synkron lagring (t.ex. localStorage) och asynkron lagring (t.ex. AsyncStorage eller IndexedDB).
