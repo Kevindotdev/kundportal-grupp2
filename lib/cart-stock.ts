@@ -1,5 +1,9 @@
 export type CartStockError = 'out-of-stock' | 'stock-limit' | 'stock-unavailable';
 
+export function isOutOfStock(product: { availabilityStatus?: string }): boolean {
+  return product.availabilityStatus?.toLowerCase() === 'out of stock';
+}
+
 export function isCartStockError(result: string): result is CartStockError {
   return result === 'out-of-stock' || result === 'stock-limit' || result === 'stock-unavailable';
 }

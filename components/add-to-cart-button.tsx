@@ -5,7 +5,7 @@ import { Loader2Icon } from 'lucide-react';
 import { useCart } from '@/components/cart-provider';
 import type { Product } from '@/app/types';
 import { discountedPrice } from '@/utils/product-price';
-import { cartStockMessage, isCartStockError } from '@/lib/cart-stock';
+import { cartStockMessage, isCartStockError, isOutOfStock } from '@/lib/cart-stock';
 
 export default function AddToCartButton({
   product,
@@ -23,22 +23,27 @@ export default function AddToCartButton({
   const [message, setMessage] = useState('');
   const [isStockError, setIsStockError] = useState(false);
   const existingItem = items.find((item) => item.id === product.id);
-  const stock = product.availabilityStatus?.toLowerCase() === 'out of stock' ? 0 : product.stock ?? existingItem?.stock;
+  const stock = isOutOfStock(product) ? 0 : product.stock ?? existingItem?.stock;
   const reachedStockLimit = stock !== undefined && existingItem !== undefined && existingItem.quantity >= stock;
 
   function addToCart() {
     setIsAdding(true);
     window.setTimeout(() => setIsAdding(false), 400);
-    const { availabilityStatus, ...cartProduct } = product;
-    const submittedStock = availabilityStatus?.toLowerCase() === 'out of stock' ? 0 : stock;
-    const result = addItem({ ...cartProduct, stock: submittedStock, price: discountedPrice(product) });
+    const result = addItem({
+      id: product.id,
+      title: product.title,
+      discountPercentage: product.discountPercentage,
+      thumbnail: product.thumbnail,
+      stock,
+      price: discountedPrice(product),
+    });
     const stockError = isCartStockError(result);
     setIsStockError(stockError);
     setMessage(
       result === 'success'
         ? `${product.title} added to cart.`
         : stockError
-          ? cartStockMessage(result, submittedStock)
+          ? cartStockMessage(result, stock)
           : 'This item could not be added to your cart.',
     );
   }
