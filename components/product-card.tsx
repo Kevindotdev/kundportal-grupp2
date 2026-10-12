@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Star } from 'lucide-react';
 import AddToCartButton from '@/components/add-to-cart-button';
 import type { Product } from '@/app/types';
+import { isOutOfStock } from '@/lib/cart-stock';
 import { discountedPrice } from '@/utils/product-price';
 
 export default function ProductCard({ product, eager = false }: { product: Product; eager?: boolean }) {
@@ -48,11 +49,15 @@ export default function ProductCard({ product, eager = false }: { product: Produ
         </div>
       </Link>
       <AddToCartButton
+        disabled={(product.stock !== undefined && product.stock <= 0) || isOutOfStock(product)}
         product={{
           id: product.id,
           title: product.title,
           price: product.price,
+          discountPercentage: product.discountPercentage,
           thumbnail: product.thumbnail,
+          stock: product.stock,
+          availabilityStatus: product.availabilityStatus,
         }}
       />
     </article>

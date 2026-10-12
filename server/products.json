@@ -11435,7 +11435,7 @@
       "title": "Red Shoes",
       "description": "The Red Shoes make a bold statement with their vibrant red color. Whether for a party or a casual outing, these shoes add a pop of color and style to your wardrobe.",
       "price": 34.99,
-      "discountPercentage": 17.69,
+      "discountPercentage": 0,
       "rating": 3.25,
       "stock": 7,
       "tags": [
