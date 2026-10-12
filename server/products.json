@@ -6868,7 +6868,7 @@
       "price": 14999.99,
       "discountPercentage": 6.92,
       "rating": 2.97,
-      "stock": 10,
+      "stock": 9,
       "tags": [
         "motorcycles",
         "sportbikes"
@@ -11500,7 +11500,7 @@
       "price": 4999.99,
       "discountPercentage": 9.45,
       "rating": 2.93,
-      "stock": 90,
+      "stock": 89,
       "tags": [
         "watches",
         "luxury watches"
@@ -11949,6 +11949,34 @@
       "name": "Women's Watches",
       "slug": "womens-watches",
       "image": "https://placehold.co/600x400"
+    }
+  ],
+  "demoOrders": [
+    {
+      "id": "c29ec639-eac9-4f53-8701-6bd274c4693d",
+      "createdAt": "2026-10-08T14:26:38.493Z",
+      "items": [
+        {
+          "productId": 190,
+          "title": "IWC Ingenieur Automatic Steel",
+          "price": 4999.99,
+          "thumbnail": "https://cdn.dummyjson.com/product-images/womens-watches/iwc-ingenieur-automatic-steel/thumbnail.webp",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "b25bf9f8-5eb9-4e79-8481-baaf13cce718",
+      "createdAt": "2026-10-08T14:34:01.887Z",
+      "items": [
+        {
+          "productId": 115,
+          "title": "MotoGP CI.H1",
+          "price": 14999.99,
+          "thumbnail": "https://cdn.dummyjson.com/product-images/motorcycle/motogp-ci.h1/thumbnail.webp",
+          "quantity": 1
+        }
+      ]
     }
   ]
 }

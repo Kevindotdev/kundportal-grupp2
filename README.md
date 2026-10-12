@@ -9,6 +9,7 @@ Group 2 project for the Agile Methods course. A Next.js inventory catalogue wher
 - Add / edit product in a modal (info, pricing, media)
 - Delete product
 - Inventory statistic cards
+- Payment-free demo checkout API with shared order history, stock updates, and a seven-day demo best-seller ranking endpoint
 - Loading spinner, custom 404, and custom error pages
 - Zod validation; form values are kept after a failed submit
 - Toast notifications (Sonner)
@@ -114,6 +115,11 @@ fix: preserve product form values on validation failure
 **Create required fields:** `title`, `price`, `description`, `thumbnail`, `categoryId`, `brand`
 
 **Auto-generated:** `id`, `sku` (`CAT-BRA-TIT-ID`), `meta` timestamps
+
+- `POST /demo-orders` — place a demo order with an idempotency key and product ID/quantity line items
+- `GET /demo-orders/best-sellers` — demo-only product ranking for the previous seven rolling days
+
+Demo orders and stock changes are saved together in `server/products.json`. The mock API processes each order synchronously in its single server process to prevent overselling from concurrent requests handled by that process. This JSON-backed setup is for the local demo environment, not multi-instance production deployment.
 
 ### Pagination, sort, filter
 

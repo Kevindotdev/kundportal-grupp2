@@ -1,12 +1,36 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const url = require("url");
 const fs = require('fs');
 const path = require('path');
 const { matchesProductQuery } = require('../utils/product-search-shared.js');
+const { DemoOrderError, createDemoOrder, getDemoBestSellers } = require('./demo-orders');
 
 const LOW_STOCK_THRESHOLD = 10; // Match your LOWSTOCKTHRESHOLD
 
 module.exports = (req, res, next) => {
     const originalQuery = url.parse(req.url, true).query;
+    const requestPath = req.path.replace(/\/+$/, '') || '/';
+    if (req.method === 'GET' && requestPath === '/demo-orders/best-sellers') {
+        try {
+            return res.status(200).json({ rankings: getDemoBestSellers(req.app.db) });
+        } catch (error) {
+            console.error('Could not load demo-order rankings:', error);
+            return res.status(500).json({ error: 'Demo-order rankings could not be loaded.' });
+        }
+    }
+    if (req.method === 'POST' && requestPath === '/demo-orders') {
+        try {
+            const result = createDemoOrder(req.app.db, req.body);
+            return res.status(result.status).json({ order: result.order });
+        } catch (error) {
+            if (error instanceof DemoOrderError) {
+                return res.status(error.status).json({ error: error.message, code: error.code });
+            }
+            console.error('Could not place demo order:', error);
+            return res.status(500).json({ error: 'The demo order could not be saved. Please try again.' });
+        }
+    }
+
     const search = originalQuery.q?.trim();
     if (req.method === 'GET' && req.path === '/products' && search) {
         try {
@@ -70,7 +94,7 @@ module.exports = (req, res, next) => {
     }
   }
     // if the request method is POST
-    if (req.method === 'POST') {
+    if (req.method === 'POST' && requestPath === '/products') {
         const requiredFields = ['title', 'price', 'description', 'thumbnail', 'categoryId', 'brand'];
         const missingFields = requiredFields.filter(field => {
             const value = req?.body?.[field];
