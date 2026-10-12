@@ -37,7 +37,7 @@ function orderTotal(items: CartItem[]) {
 
 function OrderSummary({ items }: { items: CartItem[] }) {
   return (
-    <section aria-labelledby="order-summary-heading" className="border border-border p-5">
+    <section aria-labelledby="order-summary-heading" className="border border-border bg-surface p-5 text-surface-foreground">
       <h2 id="order-summary-heading" className="mb-4 text-xl font-semibold">Your order</h2>
       <ul className="divide-y divide-border">
         {items.map((item) => (
@@ -179,12 +179,12 @@ export default function CheckoutForm() {
   if (order) {
     return (
       <div className="mt-6 space-y-6">
-        <div role="status" className="border border-success p-5">
+        <div role="status" className="border border-success bg-surface p-5 text-surface-foreground">
           <h2 className="text-xl font-semibold">Order confirmed</h2>
           <p className="mt-2">Your demo order was saved. No payment was collected.</p>
           <p className="mt-1 text-sm">Order reference: {order.id}</p>
         </div>
-        {cartClearWarning && <p role="alert" className="text-destructive">{cartClearWarning}</p>}
+        {cartClearWarning && <p role="alert" className="text-error">{cartClearWarning}</p>}
         <OrderSummary items={order.items.map((item) => ({
           id: item.productId,
           title: item.title,
@@ -200,7 +200,7 @@ export default function CheckoutForm() {
   }
 
   if (storageError) {
-    return <p role="alert" className="mt-6 text-destructive">{storageError}</p>;
+    return <p role="alert" className="mt-6 text-error">{storageError}</p>;
   }
 
   if (items.length === 0) {
@@ -217,7 +217,13 @@ export default function CheckoutForm() {
   return (
     <div className="mt-6 grid gap-8 lg:grid-cols-2">
       <div className="space-y-6">
-        <section aria-labelledby="cart-items-heading" className="border border-border p-5">
+        <Link
+          href="/products"
+          className="inline-flex min-h-11 items-center justify-center border border-border bg-surface px-5 font-semibold transition-colors hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        >
+          Continue shopping
+        </Link>
+        <section aria-labelledby="cart-items-heading" className="border border-border bg-surface p-5 text-surface-foreground">
           <h2 id="cart-items-heading" className="mb-4 text-xl font-semibold">Review your items</h2>
           <ul className="divide-y divide-border">
             {items.map((item) => (
@@ -244,7 +250,7 @@ export default function CheckoutForm() {
                         const quantity = Number(event.target.value);
                         if (Number.isSafeInteger(quantity) && quantity > 0) setQuantity(item.id, quantity);
                       }}
-                      className="w-20 border border-border px-2 py-1"
+                      className="w-20 border border-border bg-surface px-2 py-1 text-surface-foreground"
                     />
                     <button
                       type="button"
@@ -266,11 +272,11 @@ export default function CheckoutForm() {
           <p className="mt-1 text-sm text-muted-foreground">Shipping and tax are not included.</p>
         </section>
 
-        <section aria-labelledby="delivery-heading" className="border border-border p-5">
+        <section aria-labelledby="delivery-heading" className="border border-border bg-surface p-5 text-surface-foreground">
           <h2 id="delivery-heading" className="mb-4 text-xl font-semibold">Delivery information</h2>
           <form onSubmit={submitOrder} noValidate className="space-y-4">
             {validationMessage && (
-              <p role="alert" className="border border-destructive p-3 text-destructive">
+              <p role="alert" className="border border-error p-3 text-error">
                 {validationMessage}
               </p>
             )}
@@ -283,7 +289,7 @@ export default function CheckoutForm() {
                   autoComplete="given-name"
                   value={details.firstName}
                   onChange={(event) => setDetails({ ...details, firstName: event.target.value })}
-                  className="min-h-11 border border-border px-3"
+                  className="min-h-11 border border-border bg-surface px-3 text-surface-foreground"
                 />
               </label>
               <label className="flex flex-col gap-1">
@@ -294,7 +300,7 @@ export default function CheckoutForm() {
                   autoComplete="family-name"
                   value={details.lastName}
                   onChange={(event) => setDetails({ ...details, lastName: event.target.value })}
-                  className="min-h-11 border border-border px-3"
+                  className="min-h-11 border border-border bg-surface px-3 text-surface-foreground"
                 />
               </label>
             </div>
@@ -307,7 +313,7 @@ export default function CheckoutForm() {
                 autoComplete="email"
                 value={details.email}
                 onChange={(event) => setDetails({ ...details, email: event.target.value })}
-                className="min-h-11 border border-border px-3"
+                className="min-h-11 border border-border bg-surface px-3 text-surface-foreground"
               />
             </label>
             <label className="flex flex-col gap-1">
@@ -318,7 +324,7 @@ export default function CheckoutForm() {
                 autoComplete="tel"
                 value={details.phone}
                 onChange={(event) => setDetails({ ...details, phone: event.target.value })}
-                className="min-h-11 border border-border px-3"
+                className="min-h-11 border border-border bg-surface px-3 text-surface-foreground"
               />
             </label>
             <label className="flex flex-col gap-1">
@@ -329,7 +335,7 @@ export default function CheckoutForm() {
                 autoComplete="street-address"
                 value={details.street}
                 onChange={(event) => setDetails({ ...details, street: event.target.value })}
-                className="min-h-11 border border-border px-3"
+                className="min-h-11 border border-border bg-surface px-3 text-surface-foreground"
               />
             </label>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -341,7 +347,7 @@ export default function CheckoutForm() {
                   autoComplete="postal-code"
                   value={details.postalCode}
                   onChange={(event) => setDetails({ ...details, postalCode: event.target.value })}
-                  className="min-h-11 border border-border px-3"
+                  className="min-h-11 border border-border bg-surface px-3 text-surface-foreground"
                 />
               </label>
               <label className="flex flex-col gap-1">
@@ -352,7 +358,7 @@ export default function CheckoutForm() {
                   autoComplete="address-level2"
                   value={details.city}
                   onChange={(event) => setDetails({ ...details, city: event.target.value })}
-                  className="min-h-11 border border-border px-3"
+                  className="min-h-11 border border-border bg-surface px-3 text-surface-foreground"
                 />
               </label>
             </div>
@@ -364,7 +370,7 @@ export default function CheckoutForm() {
                 autoComplete="country-name"
                 value={details.country}
                 onChange={(event) => setDetails({ ...details, country: event.target.value })}
-                className="min-h-11 border border-border px-3"
+                className="min-h-11 border border-border bg-surface px-3 text-surface-foreground"
               />
             </label>
             <button
